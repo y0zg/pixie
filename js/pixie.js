@@ -1,54 +1,54 @@
 //////////////////////////
-// Pixie data structure //
+// Pixie Data Structure //
 //////////////////////////
 
 class Pixie {
     constructor(numRows, numColumns) {
-        this.numRows = numRows;
-        this.numColumns = numColumns;
-        this.pixels = [];
+        this._numRows = numRows;
+        this._numColumns = numColumns;
+        this._pixels = [];
         for (let row = 0; row < numRows; row++) {
-            this.pixels.push([]);
+            this._pixels.push([]);
             for (let column = 0; column < numColumns; column++) {
-                this.pixels[row].push((row + column) % 2 == 0 ? 'black' : 'white');
+                this._pixels[row].push((row + column) % 2 == 0 ? 'black' : 'white');
             }
         }
     }
 
     static copy(source) {
         let copy = new Pixie(source.numRows, source.numColumns);
-        copy = copy.merge(source.pixelList);
+        copy = copy.merge(source.pixels);
         return copy;
     }
 
-    get pixelList() {
-        let pixelList = [];
-        this.pixels.forEach((row, rowIndex) => {
-            row.forEach((column, columnIndex) => {
-                pixelList.push({
-                    row: rowIndex, column: columnIndex, color: column
+    merge(pixels) {
+        let merged = new Pixie(this._numRows, this._numColumns);
+        merged._pixels = this._pixels.slice();
+        pixels.forEach(pixel => {
+            merged._pixels[pixel.row][pixel.column] = pixel.color;
+        });
+        return merged;
+    }
+
+    get pixels() {
+        let pixels = [];
+        this._pixels.forEach((row, rowIndex) => {
+            row.forEach((color, columnIndex) => {
+                pixels.push({
+                    row: rowIndex, column: columnIndex, color: color
                 });
             });
         });
-        return pixelList;
-    }
-
-    merge(pixels) {
-        let merged = new Pixie(this.numRows, this.numColumns);
-        merged.pixels = this.pixels.slice();
-        pixels.forEach(pixel => {
-            merged.pixels[pixel.row][pixel.column] = pixel.color;
-        });
-        return merged;
+        return pixels;
     }
 }
 
 
 
 
-////////
-// UI //
-////////
+////////////////////
+// User Interface //
+////////////////////
 
 const numRows = 20;
 const numColumns = 20;
@@ -63,7 +63,7 @@ const ctx = canvas.getContext('2d');
 drawPixie(pixie, ctx);
 
 function drawPixie(pixie, ctx) {
-    pixie.pixelList.forEach(pixel => {
+    pixie.pixels.forEach(pixel => {
         ctx.fillStyle = pixel.color;
         ctx.fillRect(
             pixel.column * pixelSize,
@@ -75,8 +75,10 @@ function drawPixie(pixie, ctx) {
 }
 
 
+
+
 ////////////////////
-// Event handling //
+// Event Handling //
 ////////////////////
 
 let mouseDown = false;
