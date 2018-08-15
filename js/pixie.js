@@ -1,44 +1,85 @@
+//////////////////////////
+// Pixie data structure //
+//////////////////////////
+
 class Pixie {
-    constructor(width, height) {
-        this.width = width;
-        this.height = height;
+    constructor(numRows, numColumns) {
+        this.numRows = numRows;
+        this.numColumns = numColumns;
         this.pixels = [];
-        for (let row = 0; row < height; row++) {
-            for (let column = 0; column < width; column++) {
-                let pixel = { row: row, column: column, red: 0, green: 0, blue: 0 };
-                if ((row + column) % 2 == 0) {
-                    pixel.red = 0;
-                    pixel.green = 0;
-                    pixel.blue = 0;
-                }
-                this.pixels.push(pixel);
+        for (let row = 0; row < numRows; row++) {
+            this.pixels.push([]);
+            for (let column = 0; column < numColumns; column++) {
+                this.pixels[row].push((row + column) % 2 == 0 ? 'black' : 'white');
             }
         }
     }
-}
 
-const width = 10;
-const height = 10;
-const pixie = new Pixie(width, height);
-console.log(pixie);
+    static copy(source) {
+        let copy = new Pixie(source.numRows, source.numColumns);
+        copy = copy.merge(source.pixelList);
+        return copy;
+    }
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+    get pixelList() {
+        let pixelList = [];
+        this.pixels.forEach((row, rowIndex) => {
+            row.forEach((column, columnIndex) => {
+                pixelList.push({
+                    row: rowIndex, column: columnIndex, color: column
+                });
+            });
+        });
+        return pixelList;
+    }
 
-canvas.width = 300;
-canvas.height = 300;
-
-const rows = 20;
-const columns = 20;
-const cellSize = 15;
-
-let mouseDown = false;
-
-for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-        drawCell({ row: row, col: col }, (row + col) % 2 == 0 ? 'black' : 'white');
+    merge(pixels) {
+        let merged = new Pixie(this.numRows, this.numColumns);
+        merged.pixels = this.pixels.slice();
+        pixels.forEach(pixel => {
+            merged.pixels[pixel.row][pixel.column] = pixel.color;
+        });
+        return merged;
     }
 }
+
+
+
+
+////////
+// UI //
+////////
+
+const numRows = 20;
+const numColumns = 20;
+const pixelSize = 15;
+
+let pixie = new Pixie(numRows, numColumns);
+
+const canvas = document.getElementById('canvas');
+canvas.width = numColumns * pixelSize;
+canvas.height = numRows * pixelSize;
+const ctx = canvas.getContext('2d');
+drawPixie(pixie, ctx);
+
+function drawPixie(pixie, ctx) {
+    pixie.pixelList.forEach(pixel => {
+        ctx.fillStyle = pixel.color;
+        ctx.fillRect(
+            pixel.column * pixelSize,
+            pixel.row * pixelSize,
+            pixelSize,
+            pixelSize
+        );
+    });
+}
+
+
+////////////////////
+// Event handling //
+////////////////////
+
+let mouseDown = false;
 
 function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect();
@@ -48,36 +89,43 @@ function getMousePos(canvas, event) {
     };
 }
 
-function getCellPos(x, y) {
+function getPixelPos(x, y) {
     return {
-        row: Math.floor(y / cellSize),
-        col: Math.floor(x / cellSize)
+        row: Math.floor(y / pixelSize),
+        col: Math.floor(x / pixelSize)
     };
-}
-
-function drawCell(cellPos, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(cellPos.col * cellSize, cellPos.row * cellSize, cellSize, cellSize);
 }
 
 $('#canvas').on('mousedown', function (event) {
     let mousePos = getMousePos(canvas, event);
-    let cellPos = getCellPos(mousePos.x, mousePos.y);
-    console.log(`row: ${cellPos.row}, col: ${cellPos.col}`);
-    drawCell(cellPos, $('#color').val());
+    let pixelPos = getPixelPos(mousePos.x, mousePos.y);
+    pixie = pixie.merge([{
+        row: pixelPos.row,
+        column: pixelPos.col,
+        color: $('#color').val()
+    }]);
+    drawPixie(pixie, ctx);
     mouseDown = true;
-    return false;
+    return false;   // disable cursor selection
+});
+
+$(window).on('mouseup', function (event) {
+    mouseDown = false;
+});
+
+$(window).on('mousedown', function (event) {
+    return false;   // disable cursor selection
 });
 
 $('#canvas').on('mousemove', function (event) {
     if (mouseDown) {
         let mousePos = getMousePos(canvas, event);
-        let cellPos = getCellPos(mousePos.x, mousePos.y);
-        drawCell(cellPos, $('#color').val());
-        console.log(`row: ${cellPos.row}, col: ${cellPos.col}`);
+        let pixelPos = getPixelPos(mousePos.x, mousePos.y);
+        pixie = pixie.merge([{
+            row: pixelPos.row,
+            column: pixelPos.col,
+            color: $('#color').val()
+        }]);
+        drawPixie(pixie, ctx);
     }
-});
-
-$(window).on('mouseup', function (event) {
-    mouseDown = false;
 });
