@@ -16,7 +16,7 @@ class Pixie {
     }
 
     static copy(source) {
-        let copy = new Pixie(source.numRows, source.numColumns);
+        let copy = new Pixie(source._numRows, source._numColumns);
         copy = copy.merge(source.pixels);
         return copy;
     }
@@ -50,15 +50,15 @@ class Pixie {
 // User Interface //
 ////////////////////
 
-const numRows = 20;
-const numColumns = 20;
-const pixelSize = 15;
+const NUM_ROWS = 20;
+const NUM_COLUMNS = 20;
+const PIXEL_SIZE = 15;
 
-let pixie = new Pixie(numRows, numColumns);
+let pixie = new Pixie(NUM_ROWS, NUM_COLUMNS);
 
 const canvas = document.getElementById('canvas');
-canvas.width = numColumns * pixelSize;
-canvas.height = numRows * pixelSize;
+canvas.width = NUM_COLUMNS * PIXEL_SIZE;
+canvas.height = NUM_ROWS * PIXEL_SIZE;
 const ctx = canvas.getContext('2d');
 drawPixie(pixie, ctx);
 
@@ -66,10 +66,10 @@ function drawPixie(pixie, ctx) {
     pixie.pixels.forEach(pixel => {
         ctx.fillStyle = pixel.color;
         ctx.fillRect(
-            pixel.column * pixelSize,
-            pixel.row * pixelSize,
-            pixelSize,
-            pixelSize
+            pixel.column * PIXEL_SIZE,
+            pixel.row * PIXEL_SIZE,
+            PIXEL_SIZE,
+            PIXEL_SIZE
         );
     });
 }
@@ -93,8 +93,8 @@ function getMousePos(canvas, event) {
 
 function getPixelPos(x, y) {
     return {
-        row: Math.floor(y / pixelSize),
-        col: Math.floor(x / pixelSize)
+        row: Math.floor(y / PIXEL_SIZE),
+        col: Math.floor(x / PIXEL_SIZE)
     };
 }
 
