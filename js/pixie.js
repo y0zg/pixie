@@ -1,6 +1,6 @@
-//////////////////////////
-// Pixie Data Structure //
-//////////////////////////
+///////////
+// Pixie //
+///////////
 
 class Pixie {
     constructor(numRows, numColumns) {
@@ -10,7 +10,7 @@ class Pixie {
         for (let row = 0; row < numRows; row++) {
             this._pixels.push([]);
             for (let column = 0; column < numColumns; column++) {
-                this._pixels[row].push((row + column) % 2 == 0 ? 'black' : 'white');
+                this._pixels[row].push((row + column) % 2 == 0 ? '#000000' : '#ffffff');
             }
         }
     }
@@ -40,6 +40,10 @@ class Pixie {
             });
         });
         return pixels;
+    }
+
+    getPixelColor(row, column) {
+        return this._pixels[row][column];
     }
 }
 
@@ -74,6 +78,17 @@ function drawPixie(pixie, ctx) {
     });
 }
 
+function drawPixel(row, column, color, pixie, ctx) {
+    if (pixelDiffers(row, column, color, pixie)) {
+        pixie = pixie.merge([{ row: row, column: column, color: color }])
+        drawPixie(pixie, ctx);
+    }
+}
+
+function pixelDiffers(row, column, color, pixie) {
+    return color != pixie.getPixelColor(row, column);
+}
+
 
 
 
@@ -94,28 +109,23 @@ function getMousePos(canvas, event) {
 function getPixelPos(x, y) {
     return {
         row: Math.floor(y / PIXEL_SIZE),
-        col: Math.floor(x / PIXEL_SIZE)
+        column: Math.floor(x / PIXEL_SIZE)
     };
 }
 
 $('#canvas').on('mousedown', function (event) {
     let mousePos = getMousePos(canvas, event);
     let pixelPos = getPixelPos(mousePos.x, mousePos.y);
-    pixie = pixie.merge([{
-        row: pixelPos.row,
-        column: pixelPos.col,
-        color: $('#color').val()
-    }]);
-    drawPixie(pixie, ctx);
+    drawPixel(pixelPos.row, pixelPos.column, $('#color').val(), pixie, ctx);
     mouseDown = true;
     return false;   // disable cursor selection
 });
 
-$(window).on('mouseup', function (event) {
+$(window).on('mouseup', function () {
     mouseDown = false;
 });
 
-$(window).on('mousedown', function (event) {
+$(window).on('mousedown', function () {
     return false;   // disable cursor selection
 });
 
@@ -123,11 +133,6 @@ $('#canvas').on('mousemove', function (event) {
     if (mouseDown) {
         let mousePos = getMousePos(canvas, event);
         let pixelPos = getPixelPos(mousePos.x, mousePos.y);
-        pixie = pixie.merge([{
-            row: pixelPos.row,
-            column: pixelPos.col,
-            color: $('#color').val()
-        }]);
-        drawPixie(pixie, ctx);
+        drawPixel(pixelPos.row, pixelPos.column, $('#color').val(), pixie, ctx);
     }
 });
