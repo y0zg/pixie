@@ -3,18 +3,32 @@
 
 <head>
     <title>Pixie</title>
-    <link rel="stylesheet" href="./css/pixie.css">
-    <script src="./js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="./pixie.css">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
-    <h1>Pixie</h1>
-    <canvas id="canvas"></canvas>
-    <br>
-    <br>
-    <input type="color" id="color">
-    <button id="undo">Undo</button>
-    <script src="./js/pixie.js"></script>
+    <div class="container">
+        <h1 id="title">Pixie
+            <button type="button" class="btn btn-danger" id="resize">Resize</button>
+            <button type="button" class="btn btn-danger" id="reset">Reset</button>
+        </h1>
+        <form id="scaleForm">
+            <div class="form-group">
+                <label for="formControlRange">Scale</label>
+                <input type="range" class="form-control-range" min="1" max="50" id="scale" value="25" step="1">
+            </div>
+        </form>
+        <canvas id="canvas"></canvas><br>
+        <input type="color" id="color">
+        <button type="button" class="btn btn-primary" id="draw">Draw</button>
+        <button type="button" class="btn" id="eyedropper">Eyedropper</button>
+        <button type="button" class="btn" id="undo">Undo</button>
+    </div>
+
+    <script src="./pixie.js"></script>
 </body>
 
 </html>

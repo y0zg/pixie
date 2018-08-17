@@ -47,16 +47,13 @@ class Pixie {
     }
 }
 
+////////////
+// Canvas //
+////////////
 
-
-
-////////////////////
-// User Interface //
-////////////////////
-
-const NUM_ROWS = 20;
-const NUM_COLUMNS = 20;
-const PIXEL_SIZE = 15;
+let NUM_ROWS = 20;
+let NUM_COLUMNS = 20;
+let PIXEL_SIZE = 25;
 
 const canvas = document.getElementById('canvas');
 canvas.width = NUM_COLUMNS * PIXEL_SIZE;
@@ -92,15 +89,98 @@ function pixelDiffers(row, column, color, pixie) {
     return color != pixie.getPixelColor(row, column);
 }
 
-
-
-
 ////////////////////
-// Event Handling //
+// User Interface //
 ////////////////////
 
-const history = [];
-let drawing = false;
+let history = [];
+let mouseDown = false;
+const Modes = Object.freeze({ draw: 0, eyedropper: 1 });
+let mode = Modes.draw;
+
+$('#canvas').on('mousedown', function (event) {
+    let mousePos = getMousePos(canvas, event);
+    let pixelPos = getPixelPos(mousePos.x, mousePos.y);
+    switch (mode) {
+        case Modes.draw:
+            history.push(Pixie.copy(pixie));
+            pixie = drawPixel(pixelPos.row, pixelPos.column, $('#color').val(), pixie, ctx);
+            mouseDown = true;
+            break;
+        case Modes.eyedropper:
+            $('#color').val(pixie.getPixelColor(pixelPos.row, pixelPos.column));
+            setMode(Modes.draw);
+            break;
+    }
+});
+
+$('#canvas').on('mousemove', function (event) {
+    if (mouseDown) {
+        let mousePos = getMousePos(canvas, event);
+        let pixelPos = getPixelPos(mousePos.x, mousePos.y);
+        pixie = drawPixel(pixelPos.row, pixelPos.column, $('#color').val(), pixie, ctx);
+    }
+    let mousePos = getMousePos(canvas, event);
+});
+
+$(window).on('mouseup', function () {
+    mouseDown = false;
+});
+
+$('#draw').on('click', function () {
+    setMode(Modes.draw);
+});
+
+$('#eyedropper').on('click', function () {
+    setMode(Modes.eyedropper);
+});
+
+$('#undo').on('click', function () {
+    if (history.length) {
+        pixie = history.pop();
+        drawCanvas(pixie, ctx);
+    }
+});
+
+$('#reset').on('click', function () {
+    if (window.confirm('Are you sure?')) {
+        history = [];
+        pixie = new Pixie(NUM_ROWS, NUM_COLUMNS);
+        drawCanvas(pixie, ctx);
+    }
+});
+
+$('#resize').on('click', function () {
+    if ($('#resize').hasClass('disabled')) {
+        $('#resize').removeClass('disabled');
+        $('#scaleForm').hide();
+    } else {
+        $('#resize').addClass('disabled');
+        $('#scaleForm').show();
+    }
+});
+
+$('#scale').on('input', function (event) {
+    PIXEL_SIZE = $('#scale').val();
+    canvas.width = NUM_COLUMNS * PIXEL_SIZE;
+    canvas.height = NUM_ROWS * PIXEL_SIZE;
+    drawCanvas(pixie, ctx);
+});
+
+function setMode(newMode) {
+    switch (newMode) {
+        case Modes.draw:
+            mode = Modes.draw;
+            $('#draw').addClass('btn-primary');
+            $('#eyedropper').removeClass('btn-primary');
+            break;
+        case Modes.eyedropper:
+            mode = Modes.eyedropper;
+            $('#eyedropper').addClass('btn-primary');
+            $('#draw').removeClass('btn-primary');
+            break;
+    }
+}
 
 function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect();
@@ -116,35 +196,3 @@ function getPixelPos(x, y) {
         column: Math.floor(x / PIXEL_SIZE)
     };
 }
-
-$(window).on('mousedown', function () {
-    return false;   // disable cursor selection
-});
-
-$('#canvas').on('mousedown', function (event) {
-    history.push(Pixie.copy(pixie));
-    let mousePos = getMousePos(canvas, event);
-    let pixelPos = getPixelPos(mousePos.x, mousePos.y);
-    pixie = drawPixel(pixelPos.row, pixelPos.column, $('#color').val(), pixie, ctx);
-    drawing = true;
-    return false;   // disable cursor selection
-});
-
-$('#canvas').on('mousemove', function (event) {
-    if (drawing) {
-        let mousePos = getMousePos(canvas, event);
-        let pixelPos = getPixelPos(mousePos.x, mousePos.y);
-        pixie = drawPixel(pixelPos.row, pixelPos.column, $('#color').val(), pixie, ctx);
-    }
-});
-
-$(window).on('mouseup', function () {
-    drawing = false;
-});
-
-$('#undo').on('click', function () {
-    if (history.length) {
-        pixie = history.pop();
-        drawCanvas(pixie, ctx);
-    }
-});

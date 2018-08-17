@@ -1,6 +1,25 @@
+* {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
 body {
     background-color: black;
+}
+
+#title, label {
     color: white;
-    font-family: helvetica;
-  }
-  
+}
+
+form {
+    display: none;
+}
+
+#scale {
+    width: 500px;
+}
