@@ -2,9 +2,18 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import openSocket from 'socket.io-client';
+import dotenv from 'dotenv';
+dotenv.config();
 
 class App extends Component {
-  socket = openSocket('/');
+  constructor(props) {
+    super(props);
+    if (process.env.REACT_APP_SOCKET_IO_URI) {
+      this.state = { socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI) };
+    } else {
+      throw new Error('Please set socket.io server URI in .env');
+    }
+  }
 
   render() {
     return (
