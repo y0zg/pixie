@@ -9,10 +9,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     if (process.env.REACT_APP_SOCKET_IO_URI) {
-      this.state = { socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI) };
+      this.socket = openSocket(process.env.REACT_APP_SOCKET_IO_URI);
     } else {
       throw new Error('Please set socket.io server URI in .env');
     }
+  }
+
+  componentDidMount() {
+    this.socket.on('connect', () => {
+      this.socket.emit('hello', 'yo yo yo!');
+    });
+  }
+
+  componentWillUnmount() {
+    this.socket.close();
   }
 
   render() {
