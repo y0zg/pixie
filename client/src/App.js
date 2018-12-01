@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Pixie from './components/Pixie';
 import './App.css';
 import openSocket from 'socket.io-client';
 import dotenv from 'dotenv';
@@ -17,7 +17,9 @@ class App extends Component {
 
   componentDidMount() {
     this.socket.on('connect', () => {
+      console.log('socket.io id: ', this.socket.id);
       this.socket.emit('hello', 'yo yo yo!');
+      this.socket.on('disconnect', reason => console.log(`disconnect: ${reason}`));
     });
   }
 
@@ -28,20 +30,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Pixie />
       </div>
     );
   }
