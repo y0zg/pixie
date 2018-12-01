@@ -24,7 +24,7 @@ const autoScroll = async page => {
   });
 }
 
-const scrapeImgUrls = async query => {
+const scrapeImgUrls = async (query) => {
   // const browser = await puppeteer.launch({
   //   headless: false,
   //   defaultViewport: { width: 1024, height: 768 }
@@ -74,6 +74,7 @@ function decodeBase64Image(dataString) {
 (async () => {
   prompt.start();
   await prompt.get(['search'], async (error, result) => {
+    const uuid = require('uuid/v1');
     const urls = await scrapeImgUrls(result.search);
     // const browser = await puppeteer.launch({
     //   headless: false,
@@ -83,12 +84,17 @@ function decodeBase64Image(dataString) {
     // const page = await browser.newPage();
 
     for (let i = 0; i < urls.length; i++) {
+      console.log(urls[i]);
       console.log(`${typeof urls[i]}: ${urls[i]}`);
 
       const imageBuffer = decodeBase64Image(urls[i]);
       if (imageBuffer) {
         // console.log(imageBuffer);
-        await fs.writeFile(`${__dirname}/images/${i}.jpg`, imageBuffer.data, error => console.error(error));
+        await fs.writeFile(
+          `${__dirname}/images/${uuid}/${i}.jpg`,
+          imageBuffer.data/*,
+          error => console.error(error)*/
+        );
       }
 
 
