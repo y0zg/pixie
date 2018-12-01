@@ -1,9 +1,13 @@
 import React from 'react';
+import PixieContainer from './PixieContainer';
+import PixieCanvas from './PixieCanvas';
 
 class Pixie extends React.Component {
   state = {
     searchQuery: '',
-    isMouseDown: false
+    isMouseDown: false,
+    pixie: new PixieContainer(10, 10),
+    pixelSize: 25
   };
 
   mouseEvent = event => {
@@ -40,7 +44,14 @@ class Pixie extends React.Component {
     this.setState({ [key]: value });
   }
 
+  resizePixel = (newSize = null) => {
+    if (newSize) {
+      this.setState({ pixelSize: newSize });
+    }
+  };
+
   render() {
+    // console.log(this.state.pixie.pixels);
     return (
       <div className="container">
         <div className="row">
@@ -60,7 +71,14 @@ class Pixie extends React.Component {
             </form>
           </div>
           <div className="col-md-8 col-lg-9">
-            <canvas
+            <PixieCanvas
+              pixie={this.state.pixie}
+              numRows={20}
+              numColumns={20}
+              pixelSize={this.state.pixelSize}
+              setPixelSize={this.resizePixel}
+            />
+            {/* <canvas
               id="canvas"
               width="300"
               height="300"
@@ -69,7 +87,7 @@ class Pixie extends React.Component {
               onMouseMove={this.mouseEvent}
             >
               Sorry, your browser doesn't support the &lt;canvas&gt; element.
-            </canvas>
+            </canvas> */}
           </div>
 
         </div>
