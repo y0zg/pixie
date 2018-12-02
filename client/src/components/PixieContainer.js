@@ -18,7 +18,7 @@ class PixieContainer {
   }
 
   merge(pixels) {
-    let merged = new PixieContainer(this._numRows, this._numColumns);
+    const merged = new PixieContainer(this._numRows, this._numColumns);
     merged._pixels = this._pixels.slice();
     pixels.forEach(pixel => {
       merged._pixels[pixel.row][pixel.column] = pixel.color;
