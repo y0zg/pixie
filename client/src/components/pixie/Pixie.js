@@ -1,4 +1,4 @@
-class PixieContainer {
+class Pixie {
   constructor(numRows, numColumns) {
     this._numRows = numRows;
     this._numColumns = numColumns;
@@ -12,14 +12,14 @@ class PixieContainer {
   }
 
   static copy(source) {
-    let copy = new PixieContainer(source._numRows, source._numColumns);
+    let copy = new Pixie(source._numRows, source._numColumns);
     copy = copy.merge(source.pixels);
     return copy;
   }
 
-  merge(pixels) {
-    const merged = new PixieContainer(this._numRows, this._numColumns);
-    merged._pixels = this._pixels.slice();
+  static merge(pixie, pixels) {
+    const merged = new Pixie(pixie._numRows, pixie._numColumns);
+    merged._pixels = pixie._pixels.slice();
     pixels.forEach(pixel => {
       merged._pixels[pixel.row][pixel.column] = pixel.color;
     });
@@ -46,9 +46,9 @@ class PixieContainer {
     return this._numColumns;
   }
 
-  getPixelColor(row, column) {
+  pixelColor(row, column) {
     return this._pixels[row][column];
   }
 }
 
-export default PixieContainer;
+export default Pixie;
