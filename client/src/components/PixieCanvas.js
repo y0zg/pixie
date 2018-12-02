@@ -42,7 +42,7 @@ class PixieCanvas extends React.Component {
   getPixelPos = (x, y) => {
     const ctx = this.state.ctx;
     const canvasWidth = ctx.canvas.clientWidth;
-    const pixelSize = canvasWidth / this.props.pixie._numRows;
+    const pixelSize = canvasWidth / this.props.pixie.numRows;
     return {
       row: Math.floor(y / pixelSize),
       column: Math.floor(x / pixelSize)
@@ -69,7 +69,7 @@ class PixieCanvas extends React.Component {
       const ctx = this.state.ctx;
       const canvasWidth = ctx.canvas.width;
 
-      const pixelSize = canvasWidth / pixie._numRows;
+      const pixelSize = canvasWidth / pixie.numRows;
       pixie.pixels.forEach(pixel => {
         ctx.fillStyle = pixel.color;
         ctx.fillRect(

@@ -10,7 +10,7 @@ require('dotenv').config();
 
 app.use((req, res, next) => {
   const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  console.log(`${moment().format()} - ${req.method} ${req.path} - ${clientIp}`);
+  console.log(`${moment().format()} - ${clientIp} - ${req.method} ${req.path}`);
   next();
 });
 // app.use(bodyParser.urlencoded({ extended: true }));

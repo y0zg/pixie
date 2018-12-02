@@ -38,6 +38,14 @@ class PixieContainer {
     return pixels;
   }
 
+  get numRows() {
+    return this._numRows;
+  }
+
+  get numColumns() {
+    return this._numColumns;
+  }
+
   getPixelColor(row, column) {
     return this._pixels[row][column];
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Pixie from './components/Pixie';
+import PixieEdit from './components/PixieEdit';
 import './App.css';
 import openSocket from 'socket.io-client';
 import dotenv from 'dotenv';
@@ -30,7 +30,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Pixie />
+        <PixieEdit />
       </div>
     );
   }

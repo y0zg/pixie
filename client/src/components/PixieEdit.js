@@ -1,12 +1,22 @@
 import React from 'react';
 import PixieContainer from './PixieContainer';
 import PixieCanvas from './PixieCanvas';
+import PixieService from '../services/PixieService';
 
-class Pixie extends React.Component {
+class PixieEdit extends React.Component {
   state = {
     searchQuery: '',
     pixie: new PixieContainer(20, 20)
   };
+
+  async componentDidMount() {
+    try {
+      const pixies = await PixieService.getById(42);
+      console.log(pixies);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   submitForm = event => {
     event.preventDefault();
@@ -49,4 +59,4 @@ class Pixie extends React.Component {
   }
 }
 
-export default Pixie;
+export default PixieEdit;
