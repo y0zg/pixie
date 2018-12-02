@@ -87,8 +87,8 @@ class PixieCanvas extends React.Component {
     return (
       <canvas
         ref="canvas"
-        width="300"
-        height="300"
+        width={this.props.width}
+        height={this.props.height}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onMouseMove={this.onMouseMove}

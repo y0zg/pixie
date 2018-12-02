@@ -1,12 +1,12 @@
 import React from 'react';
 import PixieContainer from './PixieContainer';
 import PixieCanvas from './PixieCanvas';
-import PixieService from '../services/PixieService';
+import PixieService from '../../services/PixieService';
 
 class PixieEdit extends React.Component {
   state = {
     searchQuery: '',
-    pixie: new PixieContainer(20, 20)
+    pixie: new PixieContainer(25, 25)
   };
 
   async componentDidMount() {
@@ -50,9 +50,12 @@ class PixieEdit extends React.Component {
             </form>
           </div>
           <div className="col-md-8 col-lg-9">
-            <PixieCanvas pixie={this.state.pixie} />
+            <PixieCanvas
+              pixie={this.state.pixie}
+              width="1000"
+              height="1000"
+            />
           </div>
-
         </div>
       </div>
     );

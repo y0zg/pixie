@@ -1,4 +1,4 @@
-const PixieService = require('../services/PixieService');
+// const PixieService = require('../services/PixieService');
 
 class PixieController {
   static getAll(req, res) {
