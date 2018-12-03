@@ -5,25 +5,24 @@ class PixieIndex extends React.Component {
     this.props.history.push(`/${id}`);
   };
 
-  onClickeCreate = event => {
+  onClickCreate = () => {
     this.props.history.push('/create');
+  };
+
+  onClickEdit = id => () => {
+    this.props.history.push(`/edit/${id}`);
   };
 
   render() {
     return (
-      <>
-        <div className="container">
-          <div className="row">
-            <div className="col">
-              <button className="btn btn-primary" onClick={this.onClickeCreate}>Create</button>
-            </div>
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <button className="btn btn-primary" onClick={this.onClickCreate}>Create</button>
+            <button className="btn btn-primary" onClick={this.onClickEdit(42)}>Edit 42</button>
           </div>
         </div>
-
-        {/* <button className="btn btn-primary" onClick={this.onClickEdit(42)}>pixie 42</button>
-        <button className="btn btn-primary" onClick={this.onClickeCreate}>Create</button> */}
-
-      </>
+      </div>
     );
   }
 }

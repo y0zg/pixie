@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import Pixie from './Pixie';
 
 class PixieCanvas extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ctx: null,
-      isMouseDown: false
-    }
-  }
+  state = {
+    ctx: null,
+    isMouseDown: false
+  };
 
   static propTypes = {
     width: PropTypes.number,
@@ -69,9 +66,9 @@ class PixieCanvas extends React.Component {
   };
 
   drawPixel = (row, column, color) => {
-    const oldPixie = this.props.pixie;
     if (this.pixelDiffers(row, column, color)) {
-      let newPixie = Pixie.merge(oldPixie, [{ row, column, color }]);
+      const oldPixie = this.props.pixie;
+      const newPixie = Pixie.merge(oldPixie, [{ row, column, color }]);
       this.props.updatePixie(newPixie);
     }
   };
