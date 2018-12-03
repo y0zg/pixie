@@ -6,7 +6,7 @@ class Pixie {
     for (let row = 0; row < numRows; row++) {
       this._pixels.push([]);
       for (let column = 0; column < numColumns; column++) {
-        this._pixels[row].push((row + column) % 2 === 0 ? '#000000' : '#ffffff');
+        this._pixels[row].push((row + column) % 2 === 0 ? '#343a40' : '#ffffff');
       }
     }
   }

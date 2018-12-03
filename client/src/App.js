@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import PixieIndex from './components/pixie/PixieIndex';
-import PixieEdit from './components/pixie/PixieEdit';
+import Layout from './components/layout';
 import './App.css';
 import openSocket from 'socket.io-client';
 import dotenv from 'dotenv';
@@ -32,8 +30,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Route exact path="/" component={PixieIndex} />
-        <Route path="/:id" component={PixieEdit} />
+        <Layout />
       </div>
     );
   }

@@ -33,7 +33,6 @@ class PixieEdit extends React.Component {
       <div className="container">
         <div className="row">
           <div className="col">
-            <h1>Pixie</h1>
             <form onSubmit={this.submitForm}>
               <div className="form-group">
                 <input
