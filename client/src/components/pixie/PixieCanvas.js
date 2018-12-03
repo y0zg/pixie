@@ -1,11 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Pixie from './Pixie';
 
 class PixieCanvas extends React.Component {
-  state = {
-    ctx: null,
-    isMouseDown: false,
-    pixie: new Pixie(25, 25)
+  constructor(props) {
+    super(props);
+    this.state = {
+      ctx: null,
+      isMouseDown: false
+    }
+  }
+
+  static propTypes = {
+    width: PropTypes.number,
+    height: PropTypes.number,
+    isEditable: PropTypes.bool
+  };
+
+  static defaultProps = {
+    width: 1000,
+    height: 1000,
+    isEditable: true
   };
 
   componentDidMount() {
@@ -14,9 +29,11 @@ class PixieCanvas extends React.Component {
   }
 
   onMouseDown = event => {
-    const mouseCoords = this.getMousePos(event);
-    const pixiePosition = this.getPixelPos(mouseCoords.x, mouseCoords.y);
-    this.drawPixel(pixiePosition.row, pixiePosition.column, '#ff0000');
+    if (this.props.isEditable) {
+      const mouseCoords = this.getMousePos(event);
+      const pixiePosition = this.getPixelPos(mouseCoords.x, mouseCoords.y);
+      this.drawPixel(pixiePosition.row, pixiePosition.column, '#ff0000');
+    }
     this.setState({ isMouseDown: true });
   };
 
@@ -25,7 +42,7 @@ class PixieCanvas extends React.Component {
   };
 
   onMouseMove = event => {
-    if (this.state.isMouseDown) {
+    if (this.props.isEditable && this.state.isMouseDown) {
       const mouseCoords = this.getMousePos(event);
       const pixiePosition = this.getPixelPos(mouseCoords.x, mouseCoords.y);
       this.drawPixel(pixiePosition.row, pixiePosition.column, '#ff0000');
@@ -44,7 +61,7 @@ class PixieCanvas extends React.Component {
   getPixelPos = (x, y) => {
     const ctx = this.state.ctx;
     const canvasWidth = ctx.canvas.clientWidth;
-    const pixelSize = canvasWidth / this.state.pixie.numRows;
+    const pixelSize = canvasWidth / this.props.pixie.numRows;
     return {
       row: Math.floor(y / pixelSize),
       column: Math.floor(x / pixelSize)
@@ -52,15 +69,15 @@ class PixieCanvas extends React.Component {
   };
 
   drawPixel = (row, column, color) => {
-    const oldPixie = this.state.pixie;
+    const oldPixie = this.props.pixie;
     if (this.pixelDiffers(row, column, color)) {
       let newPixie = Pixie.merge(oldPixie, [{ row, column, color }]);
-      this.setState({ pixie: newPixie });
+      this.props.updatePixie(newPixie);
     }
   };
 
   pixelDiffers = (row, column, color) => {
-    return color !== this.state.pixie.pixelColor(row, column);
+    return color !== this.props.pixie.pixelColor(row, column);
   };
 
   drawCanvas = pixie => {
@@ -82,7 +99,7 @@ class PixieCanvas extends React.Component {
   };
 
   render() {
-    this.drawCanvas(this.state.pixie);
+    this.drawCanvas(this.props.pixie);
     return (
       <canvas
         ref="canvas"

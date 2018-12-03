@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const pixieController = require('../controllers/PixieController');
+const PixieController = require('../controllers/PixieController');
 
-router.get('/', pixieController.getAll);
-router.get('/:id', pixieController.getById);
+router.get('/', PixieController.getAll);
+router.get('/:id', PixieController.getById);
+router.post('/', PixieController.create);
 
 module.exports = router;

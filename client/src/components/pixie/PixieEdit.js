@@ -1,16 +1,18 @@
 import React from 'react';
+import Pixie from './Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
 
 class PixieEdit extends React.Component {
   state = {
-    searchQuery: ''
+    searchQuery: '',
+    pixie: new Pixie(25, 25)
   };
 
   async componentDidMount() {
     try {
-      const pixies = await PixieService.getById(42);
-      console.log(pixies);
+      const pixie = await PixieService.getById(42);
+      console.log(pixie);
     } catch (error) {
       console.error(error);
     }
@@ -27,6 +29,10 @@ class PixieEdit extends React.Component {
     const value = event.target.value;
     this.setState({ [key]: value });
   }
+
+  updatePixie = pixie => {
+    this.setState({ pixie });
+  };
 
   render() {
     return (
@@ -48,8 +54,8 @@ class PixieEdit extends React.Component {
           </div>
           <div className="col-md-8 col-lg-9">
             <PixieCanvas
-              width="1000"
-              height="1000"
+              pixie={this.state.pixie}
+              updatePixie={this.updatePixie}
             />
           </div>
         </div>
