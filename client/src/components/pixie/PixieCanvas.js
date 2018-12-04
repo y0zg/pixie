@@ -38,6 +38,7 @@ class PixieCanvas extends React.Component {
 
   onMouseUp = () => {
     this.setState({ isMouseDown: false });
+    this.props.updateServer();
   };
 
   onMouseMove = event => {

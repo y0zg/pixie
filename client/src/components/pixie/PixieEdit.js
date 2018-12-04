@@ -10,7 +10,7 @@ class PixieEdit extends React.Component {
     // size: this.props.size,
     // searchQuery: '',
     color: '#000000',
-    pixie: new Pixie(this.props.size, this.props.size)
+    pixie: null
   };
 
   static propTypes = {
@@ -48,14 +48,12 @@ class PixieEdit extends React.Component {
   // }
 
   updatePixie = pixie => {
-    console.log(pixie);
-    this.setState(
-      { pixie },
-      async () => {
-        const updateResponse = await PixieService.update(pixie);
-        console.log('update response:', updateResponse);
-      }
-    );
+    this.setState({ pixie });
+  };
+
+  updateServer = async () => {
+    const updateResponse = await PixieService.update(this.state.pixie);
+    console.log('update response:', updateResponse);
   };
 
   // onSizeChange = event => {
@@ -80,12 +78,15 @@ class PixieEdit extends React.Component {
             />
           </div>
           <div className="col-md-8 col-lg-9">
-            <PixieCanvas
-              pixie={this.state.pixie}
-              updatePixie={this.updatePixie}
-              color={this.state.color}
-              isEditable={true}
-            />
+            {this.state.pixie &&
+              <PixieCanvas
+                pixie={this.state.pixie}
+                updatePixie={this.updatePixie}
+                color={this.state.color}
+                isEditable={true}
+                updateServer={this.updateServer}
+              />
+            }
           </div>
         </div>
       </div>
