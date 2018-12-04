@@ -46,7 +46,7 @@ class PixieCanvas extends React.Component {
 
   onMouseUp = () => {
     this.setState({ isMouseDown: false });
-    this.props.updateServer();
+    // this.props.updateServer();
   };
 
   onMouseMove = event => {
@@ -82,6 +82,8 @@ class PixieCanvas extends React.Component {
       const newPixie = Pixie.merge(oldPixie, [{ row, column, color }]);
       this.props.updateDiff({ row, column, color });
       this.props.updatePixie(newPixie);
+      this.props.updateServer();
+
     }
   };
 

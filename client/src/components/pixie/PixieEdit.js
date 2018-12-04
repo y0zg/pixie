@@ -76,10 +76,14 @@ class PixieEdit extends React.Component {
   };
 
   updateServer = async () => {
-    const updateResponse = await PixieService.update(this.state.pixie);
-    console.log('update response:', updateResponse);
-    this.state.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
-    this.setState({ diff: [] });
+    try {
+      await PixieService.update(this.state.pixie);
+      // console.log('update response:', updateResponse);
+      this.state.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
+      this.setState({ diff: [] });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   updateColor = color => {
