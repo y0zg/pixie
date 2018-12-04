@@ -13,6 +13,10 @@ class Pixie {
 
   static copy(source) {
     const copy = new Pixie(source.rows, source.columns);
+    // copy._id = source._id;
+    if (source._id) {
+      copy._id = source._id;
+    }
     copy.colors = source.colors.map(row => {
       return row.map(color => {
         return color;
@@ -23,6 +27,7 @@ class Pixie {
 
   static merge(pixie, pixels) {
     const merged = new Pixie(pixie.rows, pixie.columns);
+    merged._id = pixie._id;
     merged.colors = pixie.colors.slice();
     pixels.forEach(pixel => {
       merged.colors[pixel.row][pixel.column] = pixel.color;

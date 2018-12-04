@@ -48,7 +48,14 @@ class PixieEdit extends React.Component {
   // }
 
   updatePixie = pixie => {
-    this.setState({ pixie });
+    console.log(pixie);
+    this.setState(
+      { pixie },
+      async () => {
+        const updateResponse = await PixieService.update(pixie);
+        console.log('update response:', updateResponse);
+      }
+    );
   };
 
   // onSizeChange = event => {

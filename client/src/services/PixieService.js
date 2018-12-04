@@ -12,6 +12,10 @@ class PixieService {
   static create(pixie) {
     return axios.post('/api/pixies', pixie);
   }
+
+  static update(pixie) {
+    return axios.put('/api/pixies', pixie);
+  }
 }
 
 export default PixieService;

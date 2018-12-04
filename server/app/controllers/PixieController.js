@@ -12,7 +12,7 @@ class PixieController {
       res.json({ pixie });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ error });
+      res.json({ error });
     }
 
     // res.json({
@@ -26,7 +26,17 @@ class PixieController {
       const newPixie = await PixieService.create(pixie);
       res.status(201).json({ pixie: newPixie });
     } catch (error) {
-      res.status(500).json(error);
+      res.json({ error });
+    }
+  }
+
+  static async update(req, res) {
+    try {
+      const pixie = req.body;
+      const updatedPixie = await PixieService.update(pixie);
+      res.json(updatedPixie);
+    } catch (error) {
+      res.json({ error });
     }
   }
 }

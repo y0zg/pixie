@@ -17,6 +17,12 @@ class PixieService {
   static getById(id) {
     return Pixie.findById(id);
   }
+
+  static update(pixie) {
+    const id = pixie._id;
+    delete pixie._id;
+    return Pixie.findOneAndUpdate({ _id: id }, pixie);
+  }
 }
 
 module.exports = PixieService;
