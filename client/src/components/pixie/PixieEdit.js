@@ -10,7 +10,8 @@ class PixieEdit extends React.Component {
     // size: this.props.size,
     // searchQuery: '',
     color: '#000000',
-    pixie: null
+    pixie: null,
+    eyedropper: false
   };
 
   static propTypes = {
@@ -56,6 +57,10 @@ class PixieEdit extends React.Component {
     console.log('update response:', updateResponse);
   };
 
+  updateColor = color => {
+    this.setState({ color, eyedropper: false });
+  };
+
   // onSizeChange = event => {
   //   const value = event.target.value;
   //   this.setState({
@@ -67,6 +72,10 @@ class PixieEdit extends React.Component {
     this.setState({ color: color.hex });
   };
 
+  onClickEyedropper = () => {
+    this.setState({ eyedropper: !this.state.eyedropper });
+  };
+
   render() {
     return (
       <div className="container">
@@ -75,7 +84,14 @@ class PixieEdit extends React.Component {
             <ChromePicker
               color={this.state.color}
               onChangeComplete={this.handleChangeComplete}
+              disableAlpha={true}
             />
+            <button
+              className={`btn mt-2 btn-${this.state.eyedropper ? 'primary' : 'light'}`}
+              onClick={this.onClickEyedropper}
+            >
+              Eyedropper
+            </button>
           </div>
           <div className="col-md-8 col-lg-9">
             {this.state.pixie &&
@@ -85,6 +101,8 @@ class PixieEdit extends React.Component {
                 color={this.state.color}
                 isEditable={true}
                 updateServer={this.updateServer}
+                eyedropper={this.state.eyedropper}
+                updateColor={this.updateColor}
               />
             }
           </div>

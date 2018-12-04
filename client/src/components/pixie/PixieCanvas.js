@@ -12,14 +12,16 @@ class PixieCanvas extends React.Component {
     width: PropTypes.number,
     height: PropTypes.number,
     isEditable: PropTypes.bool,
-    color: PropTypes.string
+    color: PropTypes.string,
+    eyedropper: PropTypes.bool
   };
 
   static defaultProps = {
     width: 1000,
     height: 1000,
     isEditable: false,
-    color: '#000000'
+    color: '#000000',
+    eyedropper: false
   };
 
   componentDidMount() {
@@ -31,7 +33,13 @@ class PixieCanvas extends React.Component {
     if (this.props.isEditable) {
       const mouseCoords = this.getMousePos(event);
       const pixiePosition = this.getPixelPos(mouseCoords.x, mouseCoords.y);
-      this.drawPixel(pixiePosition.row, pixiePosition.column, this.props.color);
+      if (this.props.eyedropper) {
+        this.props.updateColor(
+          this.props.pixie.pixelColor(pixiePosition.row, pixiePosition.column)
+        );
+      } else {
+        this.drawPixel(pixiePosition.row, pixiePosition.column, this.props.color);
+      }
     }
     this.setState({ isMouseDown: true });
   };
