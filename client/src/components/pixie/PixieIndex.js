@@ -1,6 +1,18 @@
 import React from 'react';
+import PixieService from '../../services/PixieService';
 
 class PixieIndex extends React.Component {
+  state = { pixies: [] };
+
+  async componentDidMount() {
+    const getAllResponse = await PixieService.getAll();
+    this.setState({ pixies: getAllResponse.data.pixies });
+  }
+
+  onSelectPixie = id => event => {
+    this.props.history.push(`/${id}`);
+  };
+
   onClickEdit = id => event => {
     this.props.history.push(`/${id}`);
   };
@@ -18,8 +30,16 @@ class PixieIndex extends React.Component {
       <div className="container">
         <div className="row">
           <div className="col">
-            <button className="btn btn-primary" onClick={this.onClickCreate}>Create</button>
-            <button className="btn btn-primary" onClick={this.onClickEdit(42)}>Edit 42</button>
+            <button className="btn btn-light" onClick={this.onClickCreate}>Create</button>
+            <ul>
+              {this.state.pixies.map(pixie => (
+                <li><button
+                  className="btn btn-light"
+                  onClick={this.onSelectPixie(pixie._id)}
+                >{pixie._id}
+                </button></li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

@@ -1,8 +1,13 @@
 const PixieService = require('../services/PixieService');
 
 class PixieController {
-  static getAll(req, res) {
-    res.json({ message: 'hello from GET /api/pixies' })
+  static async getAll(req, res) {
+    try {
+      const pixies = await PixieService.getAll();
+      res.json({ pixies });
+    } catch (error) {
+      res.json({ error });
+    }
   }
 
   static async getById(req, res) {

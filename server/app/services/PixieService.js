@@ -14,6 +14,10 @@ class PixieService {
     return new Pixie(pixie).save();
   }
 
+  static getAll() {
+    return Pixie.find({});
+  }
+
   static getById(id) {
     return Pixie.findById(id);
   }
