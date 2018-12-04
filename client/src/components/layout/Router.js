@@ -6,13 +6,11 @@ import PixieCreate from '../pixie/PixieCreate';
 
 const Router = () => {
   return (
-    <>
-      <Switch>
-        <Route path="/create" component={PixieCreate} />
-        <Route path="/:id" component={PixieEdit} />
-        <Route path="/" component={PixieIndex} />
-      </Switch>
-    </>
+    <Switch>
+      <Route path="/create" component={PixieCreate} />
+      <Route path="/:id" component={PixieEdit} />
+      <Route path="/" component={PixieIndex} />
+    </Switch>
   );
 };
 

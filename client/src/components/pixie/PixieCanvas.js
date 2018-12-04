@@ -11,13 +11,15 @@ class PixieCanvas extends React.Component {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
-    isEditable: PropTypes.bool
+    isEditable: PropTypes.bool,
+    color: PropTypes.string
   };
 
   static defaultProps = {
     width: 1000,
     height: 1000,
-    isEditable: true
+    isEditable: false,
+    color: '#000000'
   };
 
   componentDidMount() {
@@ -29,7 +31,7 @@ class PixieCanvas extends React.Component {
     if (this.props.isEditable) {
       const mouseCoords = this.getMousePos(event);
       const pixiePosition = this.getPixelPos(mouseCoords.x, mouseCoords.y);
-      this.drawPixel(pixiePosition.row, pixiePosition.column, '#ff0000');
+      this.drawPixel(pixiePosition.row, pixiePosition.column, this.props.color);
     }
     this.setState({ isMouseDown: true });
   };
@@ -42,7 +44,7 @@ class PixieCanvas extends React.Component {
     if (this.props.isEditable && this.state.isMouseDown) {
       const mouseCoords = this.getMousePos(event);
       const pixiePosition = this.getPixelPos(mouseCoords.x, mouseCoords.y);
-      this.drawPixel(pixiePosition.row, pixiePosition.column, '#ff0000');
+      this.drawPixel(pixiePosition.row, pixiePosition.column, this.props.color);
     }
   };
 
@@ -58,7 +60,7 @@ class PixieCanvas extends React.Component {
   getPixelPos = (x, y) => {
     const ctx = this.state.ctx;
     const canvasWidth = ctx.canvas.clientWidth;
-    const pixelSize = canvasWidth / this.props.pixie.numRows;
+    const pixelSize = canvasWidth / this.props.pixie.rows;
     return {
       row: Math.floor(y / pixelSize),
       column: Math.floor(x / pixelSize)
@@ -82,7 +84,7 @@ class PixieCanvas extends React.Component {
       const ctx = this.state.ctx;
       const canvasWidth = ctx.canvas.width;
 
-      const pixelSize = canvasWidth / pixie.numRows;
+      const pixelSize = canvasWidth / pixie.rows;
       pixie.pixels.forEach(pixel => {
         ctx.fillStyle = pixel.color;
         ctx.fillRect(

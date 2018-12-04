@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Pixie from './Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
+import InputRange from 'react-input-range';
+import 'react-input-range/lib/css/index.css';
 
 class PixieCreate extends React.Component {
   state = {
@@ -18,14 +20,17 @@ class PixieCreate extends React.Component {
     size: 25
   };
 
-  onFormSubmit = async event => {
+  onSubmitForm = async event => {
     event.preventDefault();
-    const createResponse = await PixieService.create(this.state.pixie);
-    console.log(createResponse);
+    try {
+      const createResponse = await PixieService.create(this.state.pixie);
+      this.props.history.push(`/${createResponse.data.pixie._id}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  onSizeChange = event => {
-    const value = event.target.value;
+  onSizeChange = value => {
     this.setState({
       size: value,
       pixie: new Pixie(value, value)
@@ -38,17 +43,13 @@ class PixieCreate extends React.Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col">
-            <form onSubmit={this.onFormSubmit}>
+          <div className="col-md-4 col-lg-3">
+            <form onSubmit={this.onSubmitForm}>
               <div className="form-group">
-                <label>Size</label>
-                <input
-                  type="range"
-                  name="rows"
-                  className="form-control"
-                  min="10"
-                  max="50"
-                  value={this.state.numRows}
+                <InputRange
+                  maxValue={40}
+                  minValue={5}
+                  value={this.state.size}
                   onChange={this.onSizeChange}
                 />
               </div>
@@ -59,7 +60,6 @@ class PixieCreate extends React.Component {
             <PixieCanvas
               pixie={this.state.pixie}
               updatePixie={this.updatePixie}
-              isEditable={false}
             />
           </div>
         </div>
