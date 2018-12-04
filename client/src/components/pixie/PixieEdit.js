@@ -17,7 +17,8 @@ class PixieEdit extends React.Component {
       color: '#000000',
       pixie: null,
       eyedropper: false,
-      socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI)
+      socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
+      diff: []
     };
   }
 
@@ -36,7 +37,7 @@ class PixieEdit extends React.Component {
       this.state.socket.on('disconnect', reason => console.log(`disconnect: ${reason}`));
       this.state.socket.on('updatePixie', updatedPixie => {
         if (updatedPixie.id === this.state.pixie._id) {
-          this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.pixels) });
+          this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
         }
       });
     });
@@ -77,11 +78,16 @@ class PixieEdit extends React.Component {
   updateServer = async () => {
     const updateResponse = await PixieService.update(this.state.pixie);
     console.log('update response:', updateResponse);
-    this.state.socket.emit('updatePixie', { id: this.state.pixie._id, pixels: this.state.pixie.pixels });
+    this.state.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
+    this.setState({ diff: [] });
   };
 
   updateColor = color => {
     this.setState({ color, eyedropper: false });
+  };
+
+  updateDiff = pixel => {
+    this.setState({ diff: [...this.state.diff, pixel] });
   };
 
   // onSizeChange = event => {
@@ -126,6 +132,7 @@ class PixieEdit extends React.Component {
                 updateServer={this.updateServer}
                 eyedropper={this.state.eyedropper}
                 updateColor={this.updateColor}
+                updateDiff={this.updateDiff}
               />
             }
           </div>

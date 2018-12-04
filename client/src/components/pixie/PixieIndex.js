@@ -33,7 +33,7 @@ class PixieIndex extends React.Component {
             <button className="btn btn-light" onClick={this.onClickCreate}>Create</button>
             <ul>
               {this.state.pixies.map(pixie => (
-                <li><button
+                <li key={pixie._id}><button
                   className="btn btn-light"
                   onClick={this.onSelectPixie(pixie._id)}
                 >{pixie._id}
