@@ -4,15 +4,22 @@ import Pixie from './Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
 import { ChromePicker } from 'react-color';
+import openSocket from 'socket.io-client';
+import dotenv from 'dotenv';
+dotenv.config();
 
 class PixieEdit extends React.Component {
-  state = {
-    // size: this.props.size,
-    // searchQuery: '',
-    color: '#000000',
-    pixie: null,
-    eyedropper: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      // size: this.props.size,
+      // searchQuery: '',
+      color: '#000000',
+      pixie: null,
+      eyedropper: false,
+      socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI)
+    };
+  }
 
   static propTypes = {
     size: PropTypes.number
@@ -23,6 +30,17 @@ class PixieEdit extends React.Component {
   };
 
   async componentDidMount() {
+    this.state.socket.on('connect', () => {
+      console.log('socket.io id: ', this.state.socket.id);
+      this.state.socket.emit('hello', 'yo yo yo!');
+      this.state.socket.on('disconnect', reason => console.log(`disconnect: ${reason}`));
+      this.state.socket.on('updatePixie', updatedPixie => {
+        if (updatedPixie.id === this.state.pixie._id) {
+          this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.pixels) });
+        }
+      });
+    });
+
     try {
       const getByIdResponse = await PixieService.getById(this.props.match.params.id);
       // console.log(getByIdResponse);
@@ -34,6 +52,10 @@ class PixieEdit extends React.Component {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  componentWillUnmount() {
+    this.state.socket.close();
   }
 
   // onSubmitForm = event => {
@@ -55,6 +77,7 @@ class PixieEdit extends React.Component {
   updateServer = async () => {
     const updateResponse = await PixieService.update(this.state.pixie);
     console.log('update response:', updateResponse);
+    this.state.socket.emit('updatePixie', { id: this.state.pixie._id, pixels: this.state.pixie.pixels });
   };
 
   updateColor = color => {

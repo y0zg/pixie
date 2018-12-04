@@ -29,6 +29,10 @@ io.on('connect', socket => {
     console.log(`client says ${msg}`);
   });
 
+  socket.on('updatePixie', updatedPixie => {
+    socket.broadcast.emit('updatePixie', updatedPixie);
+  });
+
   socket.on('disconnect', reason => {
     console.log(`socket ${socket.id} disconnected due to: ${reason}`);
   });
