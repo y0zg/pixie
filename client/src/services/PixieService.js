@@ -28,8 +28,8 @@ class PixieService {
     return axios.post('/api/pixies/upload', data);
   }
 
-  static scrape(query) {
-    return axios.get(`/api/pixies/scrape/${query}`);
+  static scrape(query, numRows) {
+    return axios.post('/api/pixies/scrape', { query, numRows });
   }
 }
 

@@ -60,7 +60,7 @@ class PixieController {
 
   static async scrape(req, res) {
     try {
-      const scrapeResult = await PixieService.scrape(req.params.query);
+      const scrapeResult = await PixieService.scrape(req.body.query, req.body.numRows);
       res.json({ pixels: scrapeResult });
     } catch (error) {
       res.json({ error });

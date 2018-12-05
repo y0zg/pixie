@@ -108,7 +108,7 @@ class PixieEdit extends React.Component {
 
   onSubmitScrape = async event => {
     event.preventDefault();
-    const scrapeResponse = await PixieService.scrape(this.state.scrapeQuery);
+    const scrapeResponse = await PixieService.scrape(this.state.scrapeQuery, this.state.pixie.rows);
     const newPixie = Pixie.merge(this.state.pixie, scrapeResponse.data.pixels);
     this.setState({ pixie: newPixie, diff: newPixie.pixels },
       () => this.updateServer());

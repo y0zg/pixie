@@ -88,7 +88,7 @@ class PixieService {
 
 
 
-  static async scrape(query) {
+  static async scrape(query, numRows) {
     // const browser = await puppeteer.launch({
     //   headless: false,
     //   defaultViewport: { width: 1024, height: 768 }
@@ -109,7 +109,7 @@ class PixieService {
     });
 
     const imageBuffer = decodeBase64Image(results[0]).data;
-    const pixels = await PixieService.pixelize(imageBuffer, 40);
+    const pixels = await PixieService.pixelize(imageBuffer, numRows);
     browser.close();
     return pixels;
   }
