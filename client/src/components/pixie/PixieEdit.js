@@ -12,13 +12,12 @@ class PixieEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // size: this.props.size,
-      // searchQuery: '',
       color: '#000000',
       pixie: null,
       eyedropper: false,
       socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
-      diff: []
+      diff: [],
+      undoStack: []
     };
   }
 
@@ -59,18 +58,6 @@ class PixieEdit extends React.Component {
     this.state.socket.close();
   }
 
-  // onSubmitForm = event => {
-  //   event.preventDefault();
-  //   this.state.searchQuery && console.log('submit form:', this.state.searchQuery);
-  //   this.setState({ searchQuery: '' });
-  // }
-
-  // searchQueryUpdate = event => {
-  //   const key = event.target.name;
-  //   const value = event.target.value;
-  //   this.setState({ [key]: value });
-  // }
-
   updatePixie = pixie => {
     this.setState({ pixie });
   };
@@ -90,16 +77,22 @@ class PixieEdit extends React.Component {
     this.setState({ color, eyedropper: false });
   };
 
-  updateDiff = pixel => {
-    this.setState({ diff: [...this.state.diff, pixel] });
+  updateDiff = (oldPixel, newPixel) => {
+    this.setState({
+      diff: [...this.state.diff, newPixel],
+      undoStack: [...this.state.undoStack, oldPixel]
+    });
   };
 
-  // onSizeChange = event => {
-  //   const value = event.target.value;
-  //   this.setState({
-  //     size: value
-  //   });
-  // };
+  onClickUndo = () => {
+    const newUndoStack = this.state.undoStack.slice();
+    const newPixel = newUndoStack.pop();
+    this.setState({
+      undoStack: newUndoStack,
+      diff: [...this.state.diff, newPixel],
+      pixie: Pixie.merge(this.state.pixie, [newPixel])
+    }, () => this.updateServer());
+  };
 
   handleChangeComplete = color => {
     this.setState({ color: color.hex });
@@ -108,6 +101,8 @@ class PixieEdit extends React.Component {
   onClickEyedropper = () => {
     this.setState({ eyedropper: !this.state.eyedropper });
   };
+
+
 
   render() {
     return (
@@ -120,10 +115,17 @@ class PixieEdit extends React.Component {
               disableAlpha={true}
             />
             <button
-              className={`btn mt-2 btn-${this.state.eyedropper ? 'primary' : 'light'}`}
+              className={`btn btn-block mt-2 btn-${this.state.eyedropper ? 'primary' : 'light'}`}
               onClick={this.onClickEyedropper}
             >
-              Eyedropper
+              eyedropper
+            </button>
+            <button
+              className={`btn btn-block mt-2 btn-light`}
+              onClick={this.onClickUndo}
+              disabled={this.state.undoStack.length === 0}
+            >
+              undo
             </button>
           </div>
           <div className="col-md-8 col-lg-9">

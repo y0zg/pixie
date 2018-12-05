@@ -13,7 +13,7 @@ const NavBar = () => {
           className="rounded-circle d-inline-block align-top mr-1"
           alt=""
         />
-        Pixie
+        pixie
       </Link>
     </nav>
   );

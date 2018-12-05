@@ -79,8 +79,9 @@ class PixieCanvas extends React.Component {
   drawPixel = (row, column, color) => {
     if (this.pixelDiffers(row, column, color)) {
       const oldPixie = this.props.pixie;
+      const oldColor = oldPixie.pixelColor(row, column);
       const newPixie = Pixie.merge(oldPixie, [{ row, column, color }]);
-      this.props.updateDiff({ row, column, color });
+      this.props.updateDiff({ row, column, color: oldColor }, { row, column, color });
       this.props.updatePixie(newPixie);
       this.props.updateServer();
 
