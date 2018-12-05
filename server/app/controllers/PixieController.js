@@ -13,16 +13,11 @@ class PixieController {
   static async getById(req, res) {
     try {
       const pixie = await PixieService.getById(req.params.id);
-      console.log(pixie);
       res.json({ pixie });
     } catch (error) {
       console.log(error);
       res.json({ error });
     }
-
-    // res.json({
-    //   message: `hello from GET /api/pixies/${req.params.id}`
-    // });
   }
 
   static async create(req, res) {
@@ -43,6 +38,11 @@ class PixieController {
     } catch (error) {
       res.json({ error });
     }
+  }
+
+  static async upload(req, res) {
+    const result = await PixieService.pixelize(req.files.file.data);
+    res.json({ hello: result });
   }
 }
 

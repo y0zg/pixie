@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Pixie from './Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
+import Dropzone from 'react-dropzone';
 import { ChromePicker } from 'react-color';
 import openSocket from 'socket.io-client';
 import dotenv from 'dotenv';
@@ -102,7 +103,11 @@ class PixieEdit extends React.Component {
     this.setState({ eyedropper: !this.state.eyedropper });
   };
 
-
+  onDrop = async (acceptedFiles, rejectedFiles) => {
+    console.log(acceptedFiles);
+    const uploadResponse = await PixieService.upload(acceptedFiles[0]);
+    console.log(uploadResponse);
+  };
 
   render() {
     return (
@@ -127,6 +132,9 @@ class PixieEdit extends React.Component {
             >
               undo
             </button>
+            <Dropzone onDrop={(files) => this.onDrop(files)}>
+              <div>Try dropping some files here, or click to select files to upload.</div>
+            </Dropzone>
           </div>
           <div className="col-md-8 col-lg-9">
             {this.state.pixie &&

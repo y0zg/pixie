@@ -16,6 +16,14 @@ class PixieService {
   static update(pixie) {
     return axios.put('/api/pixies', pixie);
   }
+
+  static upload(file) {
+    const data = new FormData();
+    data.append('file', file);
+    return axios.post('/api/pixies/upload', data);
+
+
+  }
 }
 
 export default PixieService;
