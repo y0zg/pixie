@@ -44,9 +44,6 @@ class PixieEdit extends React.Component {
 
     try {
       const getByIdResponse = await PixieService.getById(this.props.match.params.id);
-      // console.log(getByIdResponse);
-      // console.log(getByIdResponse.data.pixie.pixels());
-      // this.setState({  });
       const pixie = Pixie.copy(getByIdResponse.data.pixie);
       pixie._id = getByIdResponse.data.pixie._id;
       this.setState({ pixie });
@@ -66,7 +63,6 @@ class PixieEdit extends React.Component {
   updateServer = async () => {
     try {
       await PixieService.update(this.state.pixie);
-      // console.log('update response:', updateResponse);
       this.state.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
       this.setState({ diff: [] });
     } catch (error) {
@@ -104,10 +100,10 @@ class PixieEdit extends React.Component {
   };
 
   onDrop = async (acceptedFiles, rejectedFiles) => {
-    console.log(acceptedFiles);
     const uploadResponse = await PixieService.upload(acceptedFiles[0], this.state.pixie.rows);
-    this.setState({ pixie: Pixie.merge(this.state.pixie, uploadResponse.data.pixels) });
-    console.log(uploadResponse);
+    const newPixie = Pixie.merge(this.state.pixie, uploadResponse.data.pixels);
+    this.setState({ pixie: newPixie, diff: newPixie.pixels },
+      () => this.updateServer());
   };
 
   render() {

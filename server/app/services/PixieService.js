@@ -38,6 +38,10 @@ class PixieService {
     return Pixie.findOneAndUpdate({ _id: id }, pixie);
   }
 
+  static delete(id) {
+    return Pixie.deleteOne({ _id: id });
+  }
+
   static async pixelize(buffer, numRows) {
     const image = await Jimp.read(buffer);
     image.rgba(false);
@@ -49,8 +53,6 @@ class PixieService {
     const pixelSize = Math.floor(cropSize / numRows);
     image.crop(0, 0, pixelSize * numRows, pixelSize * numRows);
 
-    // image.resize(size, size);
-    // console.log(`width: ${width}, height: ${height}`);
     image.pixelate(pixelSize);
 
     const pixels = [];
@@ -62,7 +64,7 @@ class PixieService {
       }
     }
 
-    image.write(`${__dirname}/blah.png`);
+    // image.write(`${__dirname}/blah.png`);
     return pixels;
   }
 }

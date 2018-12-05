@@ -41,8 +41,21 @@ class PixieController {
   }
 
   static async upload(req, res) {
-    const result = await PixieService.pixelize(req.files.file.data, parseInt(req.body.size, 10));
-    res.json({ pixels: result });
+    try {
+      const result = await PixieService.pixelize(req.files.file.data, parseInt(req.body.size, 10));
+      res.json({ pixels: result });
+    } catch (error) {
+      res.json({ error });
+    }
+  }
+
+  static async delete(req, res) {
+    try {
+      await PixieService.delete(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.json({ error });
+    }
   }
 }
 

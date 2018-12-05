@@ -22,8 +22,10 @@ class PixieService {
     data.append('file', file);
     data.append('size', size);
     return axios.post('/api/pixies/upload', data);
+  }
 
-
+  static delete(id) {
+    return axios.delete(`/api/pixies/${id}`);
   }
 }
 

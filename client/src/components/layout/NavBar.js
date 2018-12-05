@@ -13,8 +13,13 @@ const NavBar = () => {
           className="rounded-circle d-inline-block align-top mr-1"
           alt=""
         />
-        pixie
+        Pixie
       </Link>
+      <ul className="navbar-nav">
+        <li className="nav-item">
+          <Link className="nav-link" to="/create">Create</Link>
+        </li>
+      </ul>
     </nav>
   );
 };
