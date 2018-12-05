@@ -32,7 +32,6 @@ class PixieEdit extends React.Component {
 
   async componentDidMount() {
     this.state.socket.on('connect', () => {
-      console.log('socket.io id: ', this.state.socket.id);
       this.state.socket.emit('hello', 'yo yo yo!');
       this.state.socket.on('disconnect', reason => console.log(`disconnect: ${reason}`));
       this.state.socket.on('updatePixie', updatedPixie => {
