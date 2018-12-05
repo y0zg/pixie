@@ -41,8 +41,8 @@ class PixieController {
   }
 
   static async upload(req, res) {
-    const result = await PixieService.pixelize(req.files.file.data);
-    res.json({ hello: result });
+    const result = await PixieService.pixelize(req.files.file.data, parseInt(req.body.size, 10));
+    res.json({ pixels: result });
   }
 }
 

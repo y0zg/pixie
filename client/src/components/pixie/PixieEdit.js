@@ -105,7 +105,8 @@ class PixieEdit extends React.Component {
 
   onDrop = async (acceptedFiles, rejectedFiles) => {
     console.log(acceptedFiles);
-    const uploadResponse = await PixieService.upload(acceptedFiles[0]);
+    const uploadResponse = await PixieService.upload(acceptedFiles[0], this.state.pixie.rows);
+    this.setState({ pixie: Pixie.merge(this.state.pixie, uploadResponse.data.pixels) });
     console.log(uploadResponse);
   };
 
@@ -126,14 +127,14 @@ class PixieEdit extends React.Component {
               eyedropper
             </button>
             <button
-              className={`btn btn-block mt-2 btn-light`}
+              className={`btn btn-block my-2 btn-light`}
               onClick={this.onClickUndo}
               disabled={this.state.undoStack.length === 0}
             >
               undo
             </button>
             <Dropzone onDrop={(files) => this.onDrop(files)}>
-              <div>Try dropping some files here, or click to select files to upload.</div>
+              <div>Drag an image here</div>
             </Dropzone>
           </div>
           <div className="col-md-8 col-lg-9">
