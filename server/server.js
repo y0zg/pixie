@@ -21,6 +21,9 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 app.use('/', express.static(path.join(__dirname, '..', 'client', 'build')));
 app.use('/api', routes);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+});
 
 const port = process.env.SERVER_PORT || 8080;
 server.listen(port, () => console.log(`pixie server listening on port ${port}`));
