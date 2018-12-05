@@ -10,17 +10,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 class PixieEdit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      color: '#000000',
-      pixie: null,
-      eyedropper: false,
-      socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
-      diff: [],
-      undoStack: []
-    };
-  }
+  state = {
+    color: '#000000',
+    pixie: null,
+    eyedropper: false,
+    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
+    diff: [],
+    undoStack: [],
+    scrapeQuery: ''
+  };
 
   static propTypes = {
     size: PropTypes.number
@@ -104,6 +102,18 @@ class PixieEdit extends React.Component {
       () => this.updateServer());
   };
 
+  onChangeScrapeQuery = event => {
+    this.setState({ scrapeQuery: event.target.value });
+  };
+
+  onSubmitScrape = async event => {
+    event.preventDefault();
+    const scrapeResponse = await PixieService.scrape(this.state.scrapeQuery);
+    const newPixie = Pixie.merge(this.state.pixie, scrapeResponse.data.pixels);
+    this.setState({ pixie: newPixie, diff: newPixie.pixels },
+      () => this.updateServer());
+  };
+
   render() {
     return (
       <div className="container">
@@ -127,6 +137,17 @@ class PixieEdit extends React.Component {
             >
               undo
             </button>
+            <form onSubmit={this.onSubmitScrape}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="scrape image..."
+                  value={this.scrapeQuery}
+                  onChange={this.onChangeScrapeQuery}
+                />
+              </div>
+            </form>
             <Dropzone onDrop={(files) => this.onDrop(files)}>
               <div>Drag an image here</div>
             </Dropzone>

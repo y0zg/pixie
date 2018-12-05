@@ -3,21 +3,40 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true });
 const Pixie = require('./../models/Pixie');
 const Jimp = require('jimp');
+const puppeteer = require('puppeteer');
 const db = mongoose.connection;
-
-function componentToHex(c) {
-  var hex = c.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
-}
-
-function rgbToHex(r, g, b) {
-  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log('connected to mongodb!');
 });
+
+const componentToHex = c => {
+  var hex = c.toString(16);
+  return hex.length == 1 ? `0${hex}` : hex;
+}
+
+const rgbToHex = (r, g, b) => {
+  return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+}
+
+function decodeBase64Image(dataString) {
+  var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+    response = {};
+
+  if (!matches || matches.length !== 3) {
+    return new Error('Invalid input string');
+  }
+
+  response.type = matches[1];
+  response.data = new Buffer(matches[2], 'base64');
+
+  return response;
+}
+
+const sleep = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 class PixieService {
   static create(pixie) {
@@ -64,7 +83,34 @@ class PixieService {
       }
     }
 
-    // image.write(`${__dirname}/blah.png`);
+    return pixels;
+  }
+
+
+
+  static async scrape(query) {
+    // const browser = await puppeteer.launch({
+    //   headless: false,
+    //   defaultViewport: { width: 1024, height: 768 }
+    // });
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(`https://www.google.com/search?&tbm=isch&q=${query}`);
+    const results = await page.evaluate(() => {
+      const imageLinks = [];
+      const elements = document.querySelectorAll('img.rg_ic.rg_i');
+      for (const element of elements) {
+        if (element.src) {
+          imageLinks.push(element.src);
+        }
+      }
+
+      return imageLinks;
+    });
+
+    const imageBuffer = decodeBase64Image(results[0]).data;
+    const pixels = await PixieService.pixelize(imageBuffer, 40);
+    browser.close();
     return pixels;
   }
 }

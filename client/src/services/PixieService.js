@@ -17,6 +17,10 @@ class PixieService {
     return axios.put('/api/pixies', pixie);
   }
 
+  static delete(id) {
+    return axios.delete(`/api/pixies/${id}`);
+  }
+
   static upload(file, size) {
     const data = new FormData();
     data.append('file', file);
@@ -24,8 +28,8 @@ class PixieService {
     return axios.post('/api/pixies/upload', data);
   }
 
-  static delete(id) {
-    return axios.delete(`/api/pixies/${id}`);
+  static scrape(query) {
+    return axios.get(`/api/pixies/scrape/${query}`);
   }
 }
 
