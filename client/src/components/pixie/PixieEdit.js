@@ -33,7 +33,6 @@ class PixieEdit extends React.Component {
   async componentDidMount() {
     this.state.socket.on('connect', () => {
       this.state.socket.emit('hello', 'yo yo yo!');
-      this.state.socket.on('disconnect', reason => console.log(`disconnect: ${reason}`));
       this.state.socket.on('updatePixie', updatedPixie => {
         if (updatedPixie.id === this.state.pixie._id) {
           this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
