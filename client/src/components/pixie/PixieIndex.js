@@ -37,7 +37,7 @@ class PixieIndex extends React.Component {
       <div className="container">
         <div className="row">
           {this.state.pixies.map(pixie => (
-            <div key={pixie._id} className="col-2">
+            <div key={pixie._id} className="col-md-4 col-lg-3">
               <div className="card mb-3">
                 <div className="card-header">
                   <div className="float-right">
@@ -46,7 +46,7 @@ class PixieIndex extends React.Component {
                     </button>
                   </div>
                 </div>
-                <div className="card-body">
+                <div className="card-body" onClick={this.onClickEdit(pixie._id)}>
                   <PixieCanvas pixie={Pixie.copy(pixie)} />
                 </div>
                 <div className="card-footer">
