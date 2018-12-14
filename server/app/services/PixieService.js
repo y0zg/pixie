@@ -34,10 +34,6 @@ function decodeBase64Image(dataString) {
   return response;
 }
 
-const sleep = ms => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 class PixieService {
   static create(pixie) {
     return new Pixie(pixie).save();
@@ -63,17 +59,12 @@ class PixieService {
 
   static async pixelize(buffer, numRows) {
     const image = await Jimp.read(buffer);
-    image.rgba(false);
     const width = image.getWidth();
     const height = image.getHeight();
     const cropSize = width > height ? height : width;
-    image.crop(0, 0, cropSize, cropSize);
-
-    const pixelSize = Math.floor(cropSize / numRows);
-    image.crop(0, 0, pixelSize * numRows, pixelSize * numRows);
-
+    image.cover(cropSize, cropSize, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
+    const pixelSize = cropSize / numRows;
     image.pixelate(pixelSize);
-
     const pixels = [];
     for (let row = 0; row < numRows; row++) {
       for (let column = 0; column < numRows; column++) {
@@ -85,8 +76,6 @@ class PixieService {
 
     return pixels;
   }
-
-
 
   static async scrape(query, numRows) {
     // const browser = await puppeteer.launch({
