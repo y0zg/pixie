@@ -5,7 +5,7 @@ import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
 import Dropzone from 'react-dropzone';
 import { ChromePicker } from 'react-color';
-import openSocket from 'socket.io-client';
+import { withSocket } from '../../context/SocketProvider';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -14,7 +14,6 @@ class PixieEdit extends React.Component {
     color: '#000000',
     pixie: null,
     eyedropper: false,
-    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
     diff: [],
     undoStack: [],
     scrapeQuery: ''
@@ -29,13 +28,10 @@ class PixieEdit extends React.Component {
   };
 
   async componentDidMount() {
-    this.state.socket.on('connect', () => {
-      this.state.socket.emit('hello', 'yo yo yo!');
-      this.state.socket.on('updatePixie', updatedPixie => {
-        if (updatedPixie.id === this.state.pixie._id) {
-          this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
-        }
-      });
+    this.props.socket.on('updatePixie', updatedPixie => {
+      if (updatedPixie.id === this.state.pixie._id) {
+        this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
+      }
     });
 
     try {
@@ -49,7 +45,7 @@ class PixieEdit extends React.Component {
   }
 
   componentWillUnmount() {
-    this.state.socket.close();
+    this.props.socket.off('updatePixie');
   }
 
   updatePixie = pixie => {
@@ -59,7 +55,7 @@ class PixieEdit extends React.Component {
   updateServer = async () => {
     try {
       await PixieService.update(this.state.pixie);
-      this.state.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
+      this.props.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
       this.setState({ diff: [] });
     } catch (error) {
       console.error(error);
@@ -172,4 +168,4 @@ class PixieEdit extends React.Component {
   }
 }
 
-export default PixieEdit;
+export default withSocket(PixieEdit);
