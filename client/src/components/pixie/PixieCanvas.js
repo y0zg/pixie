@@ -26,7 +26,8 @@ class PixieCanvas extends React.Component {
 
   componentDidMount() {
     const canvas = this.refs.canvas;
-    this.setState({ ctx: canvas.getContext("2d") });
+    const ctx = canvas.getContext('2d');
+    this.setState({ ctx });
   }
 
   onMouseDown = event => {
@@ -46,7 +47,6 @@ class PixieCanvas extends React.Component {
 
   onMouseUp = () => {
     this.setState({ isMouseDown: false });
-    // this.props.updateServer();
   };
 
   onMouseMove = event => {
@@ -103,8 +103,8 @@ class PixieCanvas extends React.Component {
         ctx.fillRect(
           pixel.column * pixelSize,
           pixel.row * pixelSize,
-          pixelSize,
-          pixelSize
+          pixelSize + 1,
+          pixelSize + 1
         );
       });
     }

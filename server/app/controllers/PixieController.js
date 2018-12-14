@@ -40,6 +40,15 @@ class PixieController {
     }
   }
 
+  static async delete(req, res) {
+    try {
+      await PixieService.delete(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.json({ error });
+    }
+  }
+
   static async upload(req, res) {
     try {
       const result = await PixieService.pixelize(req.files.file.data, parseInt(req.body.size, 10));
@@ -49,10 +58,10 @@ class PixieController {
     }
   }
 
-  static async delete(req, res) {
+  static async scrape(req, res) {
     try {
-      await PixieService.delete(req.params.id);
-      res.status(204).end();
+      const scrapeResult = await PixieService.scrape(req.body.query, req.body.numRows);
+      res.json({ pixels: scrapeResult });
     } catch (error) {
       res.json({ error });
     }
