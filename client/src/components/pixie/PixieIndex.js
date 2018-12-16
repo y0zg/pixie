@@ -2,13 +2,21 @@ import React from 'react';
 import PixieService from '../../services/PixieService';
 import PixieCanvas from './PixieCanvas';
 import Pixie from './Pixie';
+import { withSocket } from '../../context/SocketProvider';
 
+// TODO:
+// - pagination
 class PixieIndex extends React.Component {
   state = { pixies: [] };
 
   async componentDidMount() {
     const getAllResponse = await PixieService.getAll();
     this.setState({ pixies: getAllResponse.data.pixies.reverse() });
+    this.props.socket.on('updatePixie', this.updatePixie);
+  }
+
+  componentWillUnmount() {
+    this.props.socket.off('updatePixie');
   }
 
   onSelectPixie = id => () => {
@@ -30,6 +38,16 @@ class PixieIndex extends React.Component {
   onClickDelete = id => async () => {
     await PixieService.delete(id);
     this.setState({ pixies: this.state.pixies.filter(pixie => pixie._id !== id) });
+  };
+
+  updatePixie = updatedPixie => {
+    this.setState({
+      pixies: this.state.pixies.map(pixie => {
+        return pixie._id === updatedPixie.id
+          ? Pixie.merge(pixie, updatedPixie.diff)
+          : pixie;
+      })
+    });
   };
 
   render() {
@@ -66,4 +84,4 @@ class PixieIndex extends React.Component {
   }
 }
 
-export default PixieIndex;
+export default withSocket(PixieIndex);
