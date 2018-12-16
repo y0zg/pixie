@@ -47,7 +47,7 @@ class PixieCreate extends React.Component {
             <form onSubmit={this.onSubmitForm}>
               <div className="form-group">
                 <InputRange
-                  maxValue={80}
+                  maxValue={50}
                   minValue={5}
                   value={this.state.size}
                   onChange={this.onSizeChange}

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Pixie from './Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
@@ -17,14 +16,6 @@ class PixieEdit extends React.Component {
     diff: [],
     undoStack: [],
     scrapeQuery: ''
-  };
-
-  static propTypes = {
-    size: PropTypes.number
-  };
-
-  static defaultProps = {
-    size: 25
   };
 
   async componentDidMount() {
