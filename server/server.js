@@ -5,9 +5,9 @@ const routes = require('./app/routes');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const io = require('socket.io')(server);
-// const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const path = require('path');
+require('./app/Database');
 require('dotenv').config();
 
 app.use((req, res, next) => {
@@ -15,9 +15,7 @@ app.use((req, res, next) => {
   console.log(`${moment().format()} - ${clientIp} - ${req.method} ${req.path}`);
   next();
 });
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors());
 app.use(fileUpload());
 app.use('/', express.static(path.join(__dirname, '..', 'client', 'build')));
 app.use('/api', routes);
