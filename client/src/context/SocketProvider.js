@@ -1,7 +1,5 @@
 import React from 'react';
 import openSocket from 'socket.io-client';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const SocketContext = React.createContext();
 

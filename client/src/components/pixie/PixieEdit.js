@@ -5,8 +5,6 @@ import PixieService from '../../services/PixieService';
 import Dropzone from 'react-dropzone';
 import { ChromePicker } from 'react-color';
 import { withSocket } from '../../context/SocketProvider';
-import dotenv from 'dotenv';
-dotenv.config();
 
 class PixieEdit extends React.Component {
   state = {
