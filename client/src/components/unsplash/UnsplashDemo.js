@@ -1,5 +1,6 @@
 import React from 'react';
 import Unsplash, { toJson } from 'unsplash-js';
+import Pagination from './Pagination';
 
 class UnsplashDemo extends React.Component {
   state = { unsplashValue: '', results: [] };
@@ -43,6 +44,7 @@ class UnsplashDemo extends React.Component {
             </div>
           ))}
         </div>
+        <Pagination />
       </div>
     );
   }
