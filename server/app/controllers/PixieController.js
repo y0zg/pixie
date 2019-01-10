@@ -75,7 +75,9 @@ class PixieController {
         req.params.page,
         req.params.per_page
       );
-      res.json(searchResults.data);
+      const pixelized = await PixieService.pixelize(searchResults.data.results[0].urls.regular, req.params.numRows);
+      res.json({ pixels: pixelized });
+      // res.json(searchResults.data);
     } catch (error) {
       res.json({ error: error.message })
     }

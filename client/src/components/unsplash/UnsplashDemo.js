@@ -1,13 +1,13 @@
 import React from 'react';
 import Pagination from './Pagination';
-import UnsplashService from '../../services/UnsplashService';
+import PixieService from '../../services/PixieService';
 
 class UnsplashDemo extends React.Component {
   state = { query: '', results: [], selectedImg: null };
 
   onSubmitUnsplash = async event => {
     event.preventDefault();
-    const response = await UnsplashService.search(this.state.query, 1, 30);
+    const response = await PixieService.search(this.state.query, 1, 30);
     this.setState({ results: response.results, selectedImg: null });
   };
 

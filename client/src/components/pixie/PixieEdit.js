@@ -13,7 +13,8 @@ class PixieEdit extends React.Component {
     eyedropper: false,
     diff: [],
     undoStack: [],
-    scrapeQuery: ''
+    scrapeQuery: '',
+    searchQuery: ''
   };
 
   async componentDidMount() {
@@ -87,8 +88,10 @@ class PixieEdit extends React.Component {
       () => this.updateServer());
   };
 
-  onChangeScrapeQuery = event => {
-    this.setState({ scrapeQuery: event.target.value });
+  onChangeTextInput = event => {
+    const key = event.target.name;
+    const value = event.target.value;
+    this.setState({ [key]: value });
   };
 
   onSubmitScrape = async event => {
@@ -97,6 +100,16 @@ class PixieEdit extends React.Component {
     const newPixie = Pixie.merge(this.state.pixie, scrapeResponse.data.pixels);
     this.setState({ pixie: newPixie, diff: newPixie.pixels },
       () => this.updateServer());
+  };
+
+  onSubmitSearch = async event => {
+    event.preventDefault();
+    const results = await PixieService.search(this.state.searchQuery, this.state.pixie.rows, 1, 30);
+    const newPixie = Pixie.merge(this.state.pixie, results.pixels);
+    this.setState({ pixie: newPixie, diff: newPixie.pixels },
+      () => this.updateServer()
+    );
+    console.log(results);
   };
 
   render() {
@@ -125,11 +138,24 @@ class PixieEdit extends React.Component {
             <form onSubmit={this.onSubmitScrape}>
               <div className="form-group">
                 <input
+                  name="scrapeQuery"
                   type="text"
                   className="form-control"
                   placeholder="scrape image..."
                   value={this.scrapeQuery}
-                  onChange={this.onChangeScrapeQuery}
+                  onChange={this.onChangeTextInput}
+                />
+              </div>
+            </form>
+            <form onSubmit={this.onSubmitSearch}>
+              <div className="form-group">
+                <input
+                  name="searchQuery"
+                  type="text"
+                  className="form-control"
+                  placeholder="search for image..."
+                  value={this.searchQuery}
+                  onChange={this.onChangeTextInput}
                 />
               </div>
             </form>
