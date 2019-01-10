@@ -1,22 +1,23 @@
 import React from 'react';
-import Unsplash, { toJson } from 'unsplash-js';
 import Pagination from './Pagination';
+import UnsplashService from '../../services/UnsplashService';
 
 class UnsplashDemo extends React.Component {
-  state = { unsplashValue: '', results: [] };
-  unsplash = new Unsplash({ applicationId: process.env.REACT_APP_UNSPLASH_ID });
+  state = { query: '', results: [], selectedImg: null };
 
   onSubmitUnsplash = async event => {
     event.preventDefault();
-    const response = await toJson(await this.unsplash.search.photos(
-      this.state.unsplashValue, 1, 30)
-    );
-    console.log(response);
-    this.setState({ results: response.results });
+    const response = await UnsplashService.search(this.state.query, 1, 30);
+    this.setState({ results: response.results, selectedImg: null });
   };
 
   onChangeUnsplash = event => {
-    this.setState({ unsplashValue: event.target.value });
+    this.setState({ query: event.target.value });
+  };
+
+  onClickImage = selectedImg => event => {
+    event.preventDefault();
+    this.setState({ selectedImg });
   };
 
   render() {
@@ -28,19 +29,29 @@ class UnsplashDemo extends React.Component {
             type="text"
             className="form-control"
             placeholder="search photos"
-            value={this.unsplashValue}
+            value={this.query}
             onChange={this.onChangeUnsplash}
           />
         </form>
+        {this.state.selectedImg && (
+          <img
+            className="img-fluid mt-3"
+            src={this.state.selectedImg.urls.full}
+            alt={this.state.selectedImg.description}
+            onClick={() => this.setState({ selectedImg: null })}
+          />
+        )}
         <div className="row mb-3 text-center align-items-center">
           {this.state.results.map(result => (
             <div key={result.id} className="col-4">
-              <img
-                src={result.urls.small}
-                className="img-fluid mt-3"
-                style={{ maxHeight: '360px' }}
-                alt={result.description}
-              />
+              <a href="/unsplash" onClick={this.onClickImage(result)}>
+                <img
+                  src={result.urls.small}
+                  className="img-fluid mt-3"
+                  style={{ maxHeight: '360px' }}
+                  alt={result.description}
+                />
+              </a>
             </div>
           ))}
         </div>

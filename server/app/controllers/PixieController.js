@@ -1,4 +1,5 @@
 const PixieService = require('../services/PixieService');
+const UnsplashService = require('../services/UnsplashService');
 
 class PixieController {
   static async getAll(req, res) {
@@ -6,7 +7,7 @@ class PixieController {
       const pixies = await PixieService.getAll();
       res.json({ pixies });
     } catch (error) {
-      res.json({ error });
+      res.json({ error: error.message });
     }
   }
 
@@ -16,7 +17,7 @@ class PixieController {
       res.json({ pixie });
     } catch (error) {
       console.log(error);
-      res.json({ error });
+      res.json({ error: error.message });
     }
   }
 
@@ -26,7 +27,7 @@ class PixieController {
       const newPixie = await PixieService.create(pixie);
       res.status(201).json({ pixie: newPixie });
     } catch (error) {
-      res.json({ error });
+      res.json({ error: error.message });
     }
   }
 
@@ -36,7 +37,7 @@ class PixieController {
       const updatedPixie = await PixieService.update(pixie);
       res.json(updatedPixie);
     } catch (error) {
-      res.json({ error });
+      res.json({ error: error.message });
     }
   }
 
@@ -45,7 +46,7 @@ class PixieController {
       await PixieService.delete(req.params.id);
       res.status(204).end();
     } catch (error) {
-      res.json({ error });
+      res.json({ error: error.message });
     }
   }
 
@@ -54,7 +55,7 @@ class PixieController {
       const result = await PixieService.pixelize(req.files.file.data, parseInt(req.body.size, 10));
       res.json({ pixels: result });
     } catch (error) {
-      res.json({ error });
+      res.json({ error: error.message });
     }
   }
 
@@ -63,7 +64,20 @@ class PixieController {
       const scrapeResult = await PixieService.scrape(req.body.query, req.body.numRows);
       res.json({ pixels: scrapeResult });
     } catch (error) {
-      res.json({ error });
+      res.json({ error: error.message });
+    }
+  }
+
+  static async search(req, res) {
+    try {
+      const searchResults = await UnsplashService.search(
+        req.params.query,
+        req.params.page,
+        req.params.per_page
+      );
+      res.json(searchResults.data);
+    } catch (error) {
+      res.json({ error: error.message })
     }
   }
 }

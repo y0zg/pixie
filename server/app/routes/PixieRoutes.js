@@ -18,6 +18,7 @@ module.exports = function (io) {
     });
   });
 
+  router.get('/search/:query/:page/:per_page', PixieController.search);
   router.get('/', PixieController.getAll);
   router.get('/:id', PixieController.getById);
   router.post('/', PixieController.create);
