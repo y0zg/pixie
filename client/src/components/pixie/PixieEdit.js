@@ -5,6 +5,7 @@ import PixieService from '../../services/PixieService';
 import Dropzone from 'react-dropzone';
 import { ChromePicker } from 'react-color';
 import { withSocket } from '../../context/SocketProvider';
+import ImageSearch from '../common/ImageSearch';
 
 class PixieEdit extends React.Component {
   state = {
@@ -14,7 +15,8 @@ class PixieEdit extends React.Component {
     diff: [],
     undoStack: [],
     scrapeQuery: '',
-    searchQuery: ''
+    searchQuery: '',
+    showImageSearch: false
   };
 
   async componentDidMount() {
@@ -37,6 +39,10 @@ class PixieEdit extends React.Component {
   componentWillUnmount() {
     this.props.socket.off('updatePixie');
   }
+
+  toggleImageSearch = () => {
+    this.setState({ showImageSearch: !this.state.showImageSearch });
+  };
 
   updatePixie = pixie => {
     this.setState({ pixie });
@@ -105,10 +111,12 @@ class PixieEdit extends React.Component {
   onSubmitSearch = async event => {
     event.preventDefault();
     const results = await PixieService.search(this.state.searchQuery, this.state.pixie.rows, 1, 30);
-    const newPixie = Pixie.merge(this.state.pixie, results.pixels);
-    this.setState({ pixie: newPixie, diff: newPixie.pixels },
-      () => this.updateServer()
-    );
+    if (results.pixels.length > 0) {
+      const newPixie = Pixie.merge(this.state.pixie, results.pixels);
+      this.setState({ pixie: newPixie, diff: newPixie.pixels },
+        () => this.updateServer()
+      );
+    }
     console.log(results);
   };
 
@@ -129,7 +137,7 @@ class PixieEdit extends React.Component {
               eyedropper
             </button>
             <button
-              className={`btn btn-block my-2 btn-light`}
+              className={'btn btn-block my-2 btn-light'}
               onClick={this.onClickUndo}
               disabled={this.state.undoStack.length === 0}
             >
@@ -177,6 +185,8 @@ class PixieEdit extends React.Component {
               />
             }
           </div>
+          <ImageSearch isOpen={this.state.showImageSearch} toggle={this.toggleImageSearch} />
+          <button type="button" onClick={this.toggleImageSearch}>Image Search</button>
         </div>
       </div>
     );
