@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Pixie from './Pixie';
+import Pixie from '../../models/Pixie';
 
 class PixieCanvas extends React.Component {
   state = {

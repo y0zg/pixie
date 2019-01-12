@@ -1,7 +1,7 @@
 import React from 'react';
 import PixieService from '../../services/PixieService';
 import PixieCanvas from './PixieCanvas';
-import Pixie from './Pixie';
+import Pixie from '../../models/Pixie';
 import { withSocket } from '../../context/SocketProvider';
 
 // TODO:

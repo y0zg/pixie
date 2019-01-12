@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Pixie from './Pixie';
+import Pixie from '../../models/Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
 import InputRange from 'react-input-range';

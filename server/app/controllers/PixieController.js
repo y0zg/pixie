@@ -76,11 +76,12 @@ class PixieController {
         req.params.per_page
       );
       if (searchResults.data.results.length > 0) {
-        const pixelized = await PixieService.pixelize(
-          searchResults.data.results[0].urls.regular,
-          req.params.numRows
+        const pixelizedResults = await Promise.all(
+          searchResults.data.results.map(async result => {
+            return await PixieService.pixelize(result.urls.regular, req.params.numRows);
+          })
         );
-        res.json({ pixels: pixelized });
+        res.json({ pixels: pixelizedResults });
       } else {
         res.json({ pixels: [] });
       }

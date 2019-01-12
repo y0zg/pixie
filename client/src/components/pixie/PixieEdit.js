@@ -1,5 +1,5 @@
 import React from 'react';
-import Pixie from './Pixie';
+import Pixie from '../../models/Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
 import Dropzone from 'react-dropzone';
@@ -100,24 +100,24 @@ class PixieEdit extends React.Component {
     this.setState({ [key]: value });
   };
 
-  onSubmitScrape = async event => {
-    event.preventDefault();
-    const scrapeResponse = await PixieService.scrape(this.state.scrapeQuery, this.state.pixie.rows);
-    const newPixie = Pixie.merge(this.state.pixie, scrapeResponse.data.pixels);
-    this.setState({ pixie: newPixie, diff: newPixie.pixels },
-      () => this.updateServer());
-  };
+  // onSubmitScrape = async event => {
+  //   event.preventDefault();
+  //   const scrapeResponse = await PixieService.scrape(this.state.scrapeQuery, this.state.pixie.rows);
+  //   const newPixie = Pixie.merge(this.state.pixie, scrapeResponse.data.pixels);
+  //   this.setState({ pixie: newPixie, diff: newPixie.pixels },
+  //     () => this.updateServer());
+  // };
 
-  onSubmitSearch = async event => {
-    event.preventDefault();
-    const results = await PixieService.search(this.state.searchQuery, this.state.pixie.rows, 1, 30);
-    if (results.pixels.length > 0) {
-      const newPixie = Pixie.merge(this.state.pixie, results.pixels);
-      this.setState({ pixie: newPixie, diff: newPixie.pixels },
-        () => this.updateServer()
-      );
-    }
-    console.log(results);
+  onSelectPixieFromSearch = pixie => () => {
+    const newPixie = Pixie.copy(pixie);
+    this.setState(
+      {
+        pixie: newPixie,
+        diff: newPixie.pixels,
+        showImageSearch: false
+      },
+      () => this.updateServer()
+    );
   };
 
   render() {
@@ -143,33 +143,25 @@ class PixieEdit extends React.Component {
             >
               undo
             </button>
-            <form onSubmit={this.onSubmitScrape}>
-              <div className="form-group">
-                <input
-                  name="scrapeQuery"
-                  type="text"
-                  className="form-control"
-                  placeholder="scrape image..."
-                  value={this.scrapeQuery}
-                  onChange={this.onChangeTextInput}
-                />
-              </div>
-            </form>
-            <form onSubmit={this.onSubmitSearch}>
-              <div className="form-group">
-                <input
-                  name="searchQuery"
-                  type="text"
-                  className="form-control"
-                  placeholder="search for image..."
-                  value={this.searchQuery}
-                  onChange={this.onChangeTextInput}
-                />
-              </div>
-            </form>
+            {/* <form onSubmit={this.onSubmitScrape}>
+              <input
+                name="scrapeQuery"
+                type="text"
+                className="form-control"
+                placeholder="scrape image..."
+                value={this.scrapeQuery}
+                onChange={this.onChangeTextInput}
+              />
+            </form> */}
             <Dropzone onDrop={(files) => this.onDrop(files)}>
               <div>Drag an image here</div>
             </Dropzone>
+            <button
+              className="btn btn-block mt-2 btn-light"
+              onClick={this.toggleImageSearch}
+            >
+              import
+            </button>
           </div>
           <div className="col-md-8 col-lg-9">
             {this.state.pixie &&
@@ -185,8 +177,12 @@ class PixieEdit extends React.Component {
               />
             }
           </div>
-          <ImageSearch isOpen={this.state.showImageSearch} toggle={this.toggleImageSearch} />
-          <button type="button" onClick={this.toggleImageSearch}>Image Search</button>
+          <ImageSearch
+            isOpen={this.state.showImageSearch}
+            toggle={this.toggleImageSearch}
+            onSelect={this.onSelectPixieFromSearch}
+            pixie={this.state.pixie}
+          />
         </div>
       </div>
     );

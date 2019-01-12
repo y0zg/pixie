@@ -1,14 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import PixieService from '../../services/PixieService';
+import Pixie from '../../models/Pixie';
+import PixieCanvas from '../pixie/PixieCanvas';
 
 class ImageSearch extends React.Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired
+    toggle: PropTypes.func.isRequired,
+    pixie: PropTypes.instanceOf(Pixie),
+    onSelect: PropTypes.func.isRequired
   };
 
-  state = { query: '' };
+  static propDefaults = {
+    pixie: null
+  };
+
+  state = {
+    query: '',
+    searchResults: []
+  };
 
   onChangeTextInput = event => {
     const key = event.target.name;
@@ -16,14 +28,27 @@ class ImageSearch extends React.Component {
     this.setState({ [key]: value });
   };
 
-  onSubmitForm = event => {
+  onSubmitForm = async event => {
     event.preventDefault();
-    console.log('Submit: ', this.state.query);
+    if (this.state.query) {
+      try {
+        const results = await PixieService.search(this.state.query, this.props.pixie.rows, 1, 3);
+        this.setState({ searchResults: results.pixels });
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
   onOpened = () => {
-    console.log('onOpened');
     this.searchImageInput.focus();
+  };
+
+  onClosed = () => {
+    this.setState({
+      query: '',
+      searchResults: []
+    });
   };
 
   render() {
@@ -32,6 +57,7 @@ class ImageSearch extends React.Component {
         isOpen={this.props.isOpen}
         toggle={this.props.toggle}
         onOpened={this.onOpened}
+        onClosed={this.onClosed}
         className="modal-lg text-dark"
       >
         <ModalHeader toggle={this.props.toggle}>Image Search</ModalHeader>
@@ -43,20 +69,27 @@ class ImageSearch extends React.Component {
                 name="query"
                 className="form-control"
                 placeholder="search..."
-                value={this.query}
+                value={this.state.query}
                 onChange={this.onChangeTextInput}
                 ref={searchImageInput => this.searchImageInput = searchImageInput}
               />
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>
           </form>
+          <div className="row mt-3">
+            {this.state.searchResults.map((pixels, index) => {
+              const pixie = Pixie.merge(this.props.pixie, pixels);
+              return (
+                <div className="col" key={index} onClick={this.props.onSelect(pixie)}>
+                  <PixieCanvas pixie={pixie} />
+                </div>
+              );
+            })}
+          </div>
         </ModalBody>
-        <ModalFooter>
-          hey look a footer!
-        </ModalFooter>
       </Modal>
     );
   }
-};
+}
 
 export default ImageSearch;
