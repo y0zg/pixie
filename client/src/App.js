@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from './components/layout';
 import './App.css';
 
-const App = props => {
+const App = () => {
   return (
     <div className="App">
       <Layout />

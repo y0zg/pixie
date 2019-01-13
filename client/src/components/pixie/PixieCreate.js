@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Pixie from './Pixie';
+import Pixie from '../../models/Pixie';
 import PixieCanvas from './PixieCanvas';
 import PixieService from '../../services/PixieService';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 
 class PixieCreate extends React.Component {
-  state = {
-    size: this.props.size,
-    pixie: new Pixie(this.props.size, this.props.size)
-  };
-
   static propTypes = {
-    size: PropTypes.number
+    size: PropTypes.number,
   };
 
   static defaultProps = {
-    size: 25
+    size: 25,
+  };
+
+  state = {
+    size: this.props.size,
+    pixie: new Pixie(this.props.size, this.props.size),
   };
 
   onSubmitForm = async event => {
@@ -33,13 +33,15 @@ class PixieCreate extends React.Component {
   onSizeChange = value => {
     this.setState({
       size: value,
-      pixie: new Pixie(value, value)
+      pixie: new Pixie(value, value),
     });
   };
 
-  updatePixie = pixie => this.setState({ pixie });
+  updatePixie = pixie => {
+    this.setState({ pixie });
+  };
 
-  render() {
+  render = () => {
     return (
       <div className="container">
         <div className="row">
@@ -65,7 +67,7 @@ class PixieCreate extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 }
 
 export default PixieCreate;

@@ -1,17 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import SocketProvider from './context/SocketProvider';
 
 ReactDOM.render(
-  <Router>
+  <BrowserRouter>
     <SocketProvider>
       <App />
     </SocketProvider>
-  </Router>,
+  </BrowserRouter>,
   document.getElementById('root')
 );
 

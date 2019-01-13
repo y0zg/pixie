@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-const routes = require('./app/routes');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const io = require('socket.io')(server);
-// const cors = require('cors');
+const routes = require('./app/routes')(io);
 const fileUpload = require('express-fileupload');
 const path = require('path');
+require('./app/Database');
 require('dotenv').config();
 
 app.use((req, res, next) => {
@@ -15,9 +15,7 @@ app.use((req, res, next) => {
   console.log(`${moment().format()} - ${clientIp} - ${req.method} ${req.path}`);
   next();
 });
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors());
 app.use(fileUpload());
 app.use('/', express.static(path.join(__dirname, '..', 'client', 'build')));
 app.use('/api', routes);
@@ -27,20 +25,3 @@ app.get('*', (req, res) => {
 
 const port = process.env.SERVER_PORT || 8080;
 server.listen(port, () => console.log(`pixie server listening on port ${port}`));
-
-// TODO: move this out of here
-io.on('connect', socket => {
-  console.log(`socket.io connection established with id ${socket.id}`);
-
-  socket.on('hello', msg => {
-    console.log(`client says ${msg}`);
-  });
-
-  socket.on('updatePixie', updatedPixie => {
-    socket.broadcast.emit('updatePixie', updatedPixie);
-  });
-
-  socket.on('disconnect', reason => {
-    console.log(`socket ${socket.id} disconnected due to: ${reason}`);
-  });
-});
