@@ -1,25 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import PixieService from '../../services/PixieService';
 import Pixie from '../../models/Pixie';
 import PixieCanvas from '../pixie/PixieCanvas';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+} from 'reactstrap';
 
+// TODO:
+// - pagination
 class ImageSearch extends React.Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
     pixie: PropTypes.instanceOf(Pixie),
-    onSelect: PropTypes.func.isRequired
+    onSelect: PropTypes.func.isRequired,
   };
 
   static propDefaults = {
-    pixie: null
+    pixie: null,
   };
 
   state = {
     query: '',
-    searchResults: []
+    searchResults: [],
   };
 
   onChangeTextInput = event => {
@@ -32,7 +38,12 @@ class ImageSearch extends React.Component {
     event.preventDefault();
     if (this.state.query) {
       try {
-        const results = await PixieService.search(this.state.query, this.props.pixie.rows, 1, 3);
+        const results = await PixieService.search(
+          this.state.query,
+          this.props.pixie.rows,
+          1,
+          3,
+        );
         this.setState({ searchResults: results.pixels });
       } catch (error) {
         console.error(error);
@@ -47,11 +58,11 @@ class ImageSearch extends React.Component {
   onClosed = () => {
     this.setState({
       query: '',
-      searchResults: []
+      searchResults: [],
     });
   };
 
-  render() {
+  render = () => {
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -89,7 +100,7 @@ class ImageSearch extends React.Component {
         </ModalBody>
       </Modal>
     );
-  }
+  };
 }
 
 export default ImageSearch;

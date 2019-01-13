@@ -16,16 +16,18 @@ class PixieEdit extends React.Component {
     undoStack: [],
     scrapeQuery: '',
     searchQuery: '',
-    showImageSearch: false
+    showImageSearch: false,
   };
 
-  async componentDidMount() {
-    this.props.socket.on('updatePixie', updatedPixie => {
-      if (updatedPixie.id === this.state.pixie._id) {
-        this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
-      }
-    });
-
+  componentDidMount = async () => {
+    this.props.socket.on(
+      'updatePixie',
+      updatedPixie => {
+        if (updatedPixie.id === this.state.pixie._id) {
+          this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
+        }
+      },
+    );
     try {
       const getByIdResponse = await PixieService.getById(this.props.match.params.id);
       const pixie = Pixie.copy(getByIdResponse.data.pixie);
@@ -34,11 +36,11 @@ class PixieEdit extends React.Component {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.props.socket.off('updatePixie');
-  }
+  };
 
   toggleImageSearch = () => {
     this.setState({ showImageSearch: !this.state.showImageSearch });
@@ -51,7 +53,10 @@ class PixieEdit extends React.Component {
   updateServer = async () => {
     try {
       await PixieService.update(this.state.pixie);
-      this.props.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
+      this.props.socket.emit(
+        'updatePixie',
+        { id: this.state.pixie._id, diff: this.state.diff },
+      );
       this.setState({ diff: [] });
     } catch (error) {
       console.error(error);
@@ -65,18 +70,21 @@ class PixieEdit extends React.Component {
   updateDiff = (oldPixel, newPixel) => {
     this.setState({
       diff: [...this.state.diff, newPixel],
-      undoStack: [...this.state.undoStack, oldPixel]
+      undoStack: [...this.state.undoStack, oldPixel],
     });
   };
 
   onClickUndo = () => {
     const newUndoStack = this.state.undoStack.slice();
     const newPixel = newUndoStack.pop();
-    this.setState({
-      undoStack: newUndoStack,
-      diff: [...this.state.diff, newPixel],
-      pixie: Pixie.merge(this.state.pixie, [newPixel])
-    }, () => this.updateServer());
+    this.setState(
+      {
+        undoStack: newUndoStack,
+        diff: [...this.state.diff, newPixel],
+        pixie: Pixie.merge(this.state.pixie, [newPixel]),
+      },
+      () => this.updateServer(),
+    );
   };
 
   handleChangeComplete = color => {
@@ -90,8 +98,13 @@ class PixieEdit extends React.Component {
   onDrop = async (acceptedFiles, rejectedFiles) => {
     const uploadResponse = await PixieService.upload(acceptedFiles[0], this.state.pixie.rows);
     const newPixie = Pixie.merge(this.state.pixie, uploadResponse.data.pixels);
-    this.setState({ pixie: newPixie, diff: newPixie.pixels },
-      () => this.updateServer());
+    this.setState(
+      {
+        pixie: newPixie,
+        diff: newPixie.pixels,
+      },
+      () => this.updateServer(),
+    );
   };
 
   onChangeTextInput = event => {
@@ -104,8 +117,13 @@ class PixieEdit extends React.Component {
   //   event.preventDefault();
   //   const scrapeResponse = await PixieService.scrape(this.state.scrapeQuery, this.state.pixie.rows);
   //   const newPixie = Pixie.merge(this.state.pixie, scrapeResponse.data.pixels);
-  //   this.setState({ pixie: newPixie, diff: newPixie.pixels },
-  //     () => this.updateServer());
+  //   this.setState(
+  //     {
+  //       pixie: newPixie,
+  //       diff: newPixie.pixels,
+  //     },
+  //     () => this.updateServer(),
+  //   );
   // };
 
   onSelectPixieFromSearch = pixie => () => {
@@ -114,13 +132,13 @@ class PixieEdit extends React.Component {
       {
         pixie: newPixie,
         diff: newPixie.pixels,
-        showImageSearch: false
+        showImageSearch: false,
       },
-      () => this.updateServer()
+      () => this.updateServer(),
     );
   };
 
-  render() {
+  render = () => {
     return (
       <div className="container">
         <div className="row">
@@ -153,7 +171,7 @@ class PixieEdit extends React.Component {
                 onChange={this.onChangeTextInput}
               />
             </form> */}
-            <Dropzone onDrop={(files) => this.onDrop(files)}>
+            <Dropzone onDrop={files => this.onDrop(files)}>
               <div>Drag an image here</div>
             </Dropzone>
             <button
@@ -186,7 +204,7 @@ class PixieEdit extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 }
 
 export default withSocket(PixieEdit);

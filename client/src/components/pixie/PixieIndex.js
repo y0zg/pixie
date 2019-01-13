@@ -9,15 +9,15 @@ import { withSocket } from '../../context/SocketProvider';
 class PixieIndex extends React.Component {
   state = { pixies: [] };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     const getAllResponse = await PixieService.getAll();
     this.setState({ pixies: getAllResponse.data.pixies.reverse() });
     this.props.socket.on('updatePixie', this.updatePixie);
-  }
+  };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.props.socket.off('updatePixie');
-  }
+  };
 
   onSelectPixie = id => () => {
     this.props.history.push(`/${id}`);
@@ -42,15 +42,14 @@ class PixieIndex extends React.Component {
 
   updatePixie = updatedPixie => {
     this.setState({
-      pixies: this.state.pixies.map(pixie => {
-        return pixie._id === updatedPixie.id
-          ? Pixie.merge(pixie, updatedPixie.diff)
-          : pixie;
-      })
+      pixies: this.state.pixies.map(pixie => (pixie._id === updatedPixie.id
+        ? Pixie.merge(pixie, updatedPixie.diff)
+        : pixie
+      ))
     });
   };
 
-  render() {
+  render = () => {
     return (
       <div className="container">
         <div className="row">
@@ -81,7 +80,7 @@ class PixieIndex extends React.Component {
         </div>
       </div >
     );
-  }
+  };
 }
 
 export default withSocket(PixieIndex);

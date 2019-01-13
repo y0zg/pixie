@@ -3,26 +3,26 @@ import openSocket from 'socket.io-client';
 
 const SocketContext = React.createContext();
 
-export default class SocketProvider extends React.Component {
+class SocketProvider extends React.Component {
   state = {
     socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI)
   };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.state.socket.close();
-  }
+  };
 
-  render() {
+  render = () => {
     return (
       <SocketContext.Provider value={this.state.socket}>
         {this.props.children}
       </SocketContext.Provider>
     );
-  }
+  };
 }
 
-export const withSocket = Component => {
-  return function contextComponent(props) {
+const withSocket = Component => {
+  return props => {
     return (
       <SocketContext.Consumer>
         {socket => <Component {...props} socket={socket} />}
@@ -30,3 +30,6 @@ export const withSocket = Component => {
     );
   };
 };
+
+export { withSocket };
+export default SocketProvider;

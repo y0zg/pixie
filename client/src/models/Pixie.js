@@ -11,26 +11,29 @@ class Pixie {
     }
   }
 
-  static copy(source) {
+  static copy = source => {
     const copy = new Pixie(source.rows, source.columns);
     if (source._id) {
       copy._id = source._id;
     }
+
     copy.colors = source.colors.map(row => {
       return row.map(color => {
         return color;
       });
     });
-    return copy;
-  }
 
-  static merge(pixie, pixels) {
+    return copy;
+  };
+
+  static merge = (pixie, pixels) => {
     const merged = Pixie.copy(pixie);
     pixels.forEach(pixel => {
       merged.colors[pixel.row][pixel.column] = pixel.color;
     });
+
     return merged;
-  }
+  };
 
   get pixels() {
     let pixels = [];
@@ -41,12 +44,13 @@ class Pixie {
         });
       });
     });
+
     return pixels;
   }
 
-  pixelColor(row, column) {
+  pixelColor = (row, column) => {
     return this.colors[row][column];
-  }
+  };
 }
 
 export default Pixie;

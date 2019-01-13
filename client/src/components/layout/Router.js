@@ -3,12 +3,10 @@ import { Switch, Route } from 'react-router-dom';
 import PixieIndex from '../pixie/PixieIndex';
 import PixieEdit from '../pixie/PixieEdit';
 import PixieCreate from '../pixie/PixieCreate';
-import UnsplashDemo from '../unsplash/UnsplashDemo';
 
 const Router = () => {
   return (
     <Switch>
-      <Route path="/unsplash" component={UnsplashDemo} />
       <Route path="/create" component={PixieCreate} />
       <Route path="/:id" component={PixieEdit} />
       <Route path="/" component={PixieIndex} />

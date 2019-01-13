@@ -3,17 +3,12 @@ import PropTypes from 'prop-types';
 import Pixie from '../../models/Pixie';
 
 class PixieCanvas extends React.Component {
-  state = {
-    ctx: null,
-    isMouseDown: false
-  };
-
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     isEditable: PropTypes.bool,
     color: PropTypes.string,
-    eyedropper: PropTypes.bool
+    eyedropper: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -21,14 +16,19 @@ class PixieCanvas extends React.Component {
     height: 1000,
     isEditable: false,
     color: '#000000',
-    eyedropper: false
+    eyedropper: false,
   };
 
-  componentDidMount() {
+  state = {
+    ctx: null,
+    isMouseDown: false,
+  };
+
+  componentDidMount = () => {
     const canvas = this.refs.canvas;
     const ctx = canvas.getContext('2d');
     this.setState({ ctx });
-  }
+  };
 
   onMouseDown = event => {
     if (this.props.isEditable) {
@@ -42,6 +42,7 @@ class PixieCanvas extends React.Component {
         this.drawPixel(pixiePosition.row, pixiePosition.column, this.props.color);
       }
     }
+
     this.setState({ isMouseDown: true });
   };
 
@@ -60,20 +61,14 @@ class PixieCanvas extends React.Component {
   getMousePos = event => {
     const canvas = this.refs.canvas;
     const rect = canvas.getBoundingClientRect();
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
   getPixelPos = (x, y) => {
     const ctx = this.state.ctx;
     const canvasWidth = ctx.canvas.clientWidth;
     const pixelSize = canvasWidth / this.props.pixie.rows;
-    return {
-      row: Math.floor(y / pixelSize),
-      column: Math.floor(x / pixelSize)
-    };
+    return { row: Math.floor(y / pixelSize), column: Math.floor(x / pixelSize) };
   };
 
   drawPixel = (row, column, color) => {
@@ -84,7 +79,6 @@ class PixieCanvas extends React.Component {
       this.props.updateDiff({ row, column, color: oldColor }, { row, column, color });
       this.props.updatePixie(newPixie);
       this.props.updateServer();
-
     }
   };
 
@@ -96,7 +90,6 @@ class PixieCanvas extends React.Component {
     if (this.state.ctx) {
       const ctx = this.state.ctx;
       const canvasWidth = ctx.canvas.width;
-
       const pixelSize = canvasWidth / pixie.rows;
       pixie.pixels.forEach(pixel => {
         ctx.fillStyle = pixel.color;
@@ -104,13 +97,13 @@ class PixieCanvas extends React.Component {
           pixel.column * pixelSize,
           pixel.row * pixelSize,
           pixelSize + 1,
-          pixelSize + 1
+          pixelSize + 1,
         );
       });
     }
   };
 
-  render() {
+  render = () => {
     this.drawCanvas(this.props.pixie);
     return (
       <canvas
@@ -124,7 +117,7 @@ class PixieCanvas extends React.Component {
         Sorry, your browser doesn't support the &lt;canvas&gt; element.
       </canvas >
     );
-  }
+  };
 }
 
 export default PixieCanvas;
