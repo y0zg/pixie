@@ -8,7 +8,6 @@ const routes = require('./app/routes')(io);
 const fileUpload = require('express-fileupload');
 const path = require('path');
 require('./app/Database');
-require('dotenv').config();
 
 app.use((req, res, next) => {
   const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;

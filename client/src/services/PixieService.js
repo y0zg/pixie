@@ -32,7 +32,7 @@ class PixieService {
     return axios.post('/api/pixies/scrape', { query, numRows });
   };
 
-  static search = async (query, numRows, page = 1, per_page = 30) => {
+  static search = async (query, numRows, page = 1, per_page = 10) => {
     const response = await axios.get(`/api/pixies/search/${query}/${numRows}/${page}/${per_page}`);
     return response.data;
   };

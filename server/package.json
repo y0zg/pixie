@@ -13,5 +13,8 @@
     "mongoose": "^5.3.14",
     "puppeteer": "^1.11.0",
     "socket.io": "^2.1.1"
+  },
+  "scripts": {
+    "start": "nodemon"
   }
 }
