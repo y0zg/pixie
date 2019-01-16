@@ -9,6 +9,7 @@ class PixieCanvas extends React.Component {
     isEditable: PropTypes.bool,
     color: PropTypes.string,
     eyedropper: PropTypes.bool,
+    style: PropTypes.object,
   };
 
   static defaultProps = {
@@ -17,6 +18,7 @@ class PixieCanvas extends React.Component {
     isEditable: false,
     color: '#000000',
     eyedropper: false,
+    style: null,
   };
 
   state = {
@@ -113,6 +115,7 @@ class PixieCanvas extends React.Component {
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onMouseMove={this.onMouseMove}
+        style={this.props.style}
       >
         Sorry, your browser doesn't support the &lt;canvas&gt; element.
       </canvas >

@@ -7,10 +7,10 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
 } from 'reactstrap';
+import Pagination from './Pagination';
 
-// TODO:
-// - pagination
 class ImageSearch extends React.Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
@@ -25,7 +25,11 @@ class ImageSearch extends React.Component {
 
   state = {
     query: '',
+    previousQuery: '',
     searchResults: [],
+    totalPages: 0,
+    currentPage: 1,
+    maxPages: 10,
   };
 
   onChangeTextInput = event => {
@@ -34,19 +38,13 @@ class ImageSearch extends React.Component {
     this.setState({ [key]: value });
   };
 
-  onSubmitForm = async event => {
+  onSubmitForm = event => {
     event.preventDefault();
-    if (this.state.query) {
-      try {
-        const results = await PixieService.search(
-          this.state.query,
-          this.props.pixie.rows,
-          1,
-          3,
-        );
-        this.setState({ searchResults: results.pixels });
-      } catch (error) {
-        console.error(error);
+    if (this.state.query && this.state.query !== this.state.previousQuery) {
+      if (this.currentPage !== 1) {
+        this.setState({ currentPage: 1 }, () => this.search());
+      } else {
+        this.search();
       }
     }
   };
@@ -58,20 +56,53 @@ class ImageSearch extends React.Component {
   onClosed = () => {
     this.setState({
       query: '',
+      previousQuery: '',
       searchResults: [],
+      totalPages: 0,
+      currentPage: 1
     });
   };
 
+  search = async () => {
+    try {
+      const results = await PixieService.search(
+        this.state.query,
+        this.props.pixie.rows,
+        this.state.currentPage,
+        3,
+      );
+      this.setState({
+        totalPages: results.totalPages,
+        searchResults: results.pixels,
+        previousQuery: this.state.query,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  setCurrentPage = currentPage => {
+    this.setState(
+      {
+        currentPage,
+        searchResults: [],
+      },
+      () => this.search()
+    );
+  };
+
   render = () => {
+    const { isOpen, toggle, onSelect } = this.props;
+    const { query, totalPages, currentPage } = this.state;
     return (
       <Modal
-        isOpen={this.props.isOpen}
-        toggle={this.props.toggle}
+        isOpen={isOpen}
+        toggle={toggle}
         onOpened={this.onOpened}
         onClosed={this.onClosed}
         className="modal-lg text-dark"
       >
-        <ModalHeader toggle={this.props.toggle}>Image Search</ModalHeader>
+        <ModalHeader toggle={toggle}>Import</ModalHeader>
         <ModalBody>
           <form onSubmit={this.onSubmitForm}>
             <div className="form-group">
@@ -80,24 +111,36 @@ class ImageSearch extends React.Component {
                 name="query"
                 className="form-control"
                 placeholder="search..."
-                value={this.state.query}
+                value={query}
                 onChange={this.onChangeTextInput}
                 ref={searchImageInput => this.searchImageInput = searchImageInput}
               />
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>
           </form>
-          <div className="row mt-3">
+          <div className="row mt-3" style={{ height: '241px' }}>
             {this.state.searchResults.map((pixels, index) => {
               const pixie = Pixie.merge(this.props.pixie, pixels);
               return (
-                <div className="col" key={index} onClick={this.props.onSelect(pixie)}>
-                  <PixieCanvas pixie={pixie} />
+                <div
+                  className="col"
+                  key={index}
+                  onClick={onSelect(pixie)}
+                >
+                  <PixieCanvas pixie={pixie} style={{ cursor: 'pointer' }} />
                 </div>
               );
             })}
           </div>
         </ModalBody>
+        <ModalFooter className="justify-content-center">
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={this.setCurrentPage}
+            maxPages={this.state.maxPages}
+          />
+        </ModalFooter>
       </Modal>
     );
   };

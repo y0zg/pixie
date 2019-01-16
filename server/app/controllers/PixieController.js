@@ -81,9 +81,17 @@ class PixieController {
             return await PixieService.pixelize(result.urls.regular, req.params.numRows);
           })
         );
-        res.json({ pixels: pixelizedResults });
+        res.json({
+          total: searchResults.data.total,
+          totalPages: searchResults.data.total_pages,
+          pixels: pixelizedResults,
+        });
       } else {
-        res.json({ pixels: [] });
+        res.json({
+          total: 0,
+          totalPages: 0,
+          pixels: [],
+        });
       }
     } catch (error) {
       res.json({ error: error.message })
