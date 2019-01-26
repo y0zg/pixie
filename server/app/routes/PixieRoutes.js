@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const PixieController = require('../controllers/PixieController');
 
-module.exports = function (io) {
+module.exports = function(io) {
   io.on('connect', socket => {
     console.log(`socket.io connection established with id ${socket.id}`);
 
@@ -28,4 +28,4 @@ module.exports = function (io) {
   router.post('/scrape', PixieController.scrape);
 
   return router;
-}
+};
