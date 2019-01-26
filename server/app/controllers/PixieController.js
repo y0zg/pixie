@@ -46,7 +46,9 @@ class PixieController {
       await PixieService.delete(req.params.id);
       res.status(204).end();
     } catch (error) {
-      res.json({ error: error.message });
+      const { name, message, stack } = error;
+      console.error(stack);
+      res.status(404).send({ error: { name, message } });
     }
   }
 
@@ -59,14 +61,14 @@ class PixieController {
     }
   }
 
-  static async scrape(req, res) {
-    try {
-      const scrapeResult = await PixieService.scrape(req.body.query, req.body.numRows);
-      res.json({ pixels: scrapeResult });
-    } catch (error) {
-      res.json({ error: error.message });
-    }
-  }
+  // static async scrape(req, res) {
+  //   try {
+  //     const scrapeResult = await PixieService.scrape(req.body.query, req.body.numRows);
+  //     res.json({ pixels: scrapeResult });
+  //   } catch (error) {
+  //     res.json({ error: error.message });
+  //   }
+  // }
 
   static async search(req, res) {
     try {
@@ -94,7 +96,7 @@ class PixieController {
         });
       }
     } catch (error) {
-      res.json({ error: error.message })
+      res.json({ error: error.message });
     }
   }
 }

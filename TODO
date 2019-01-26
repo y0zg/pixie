@@ -1,0 +1,48 @@
+BUG:
+  ☐ error check that pixie id exists when loading @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#11 @est(1h) @today
+  ☐ pixie can be "edited" even if it has been deleted. graceful way to handle @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#12 @est(1h) @today
+
+FIXME:
+  ☐ trim extra properties off json responses @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieCreate.js#10 @est(15m) @today
+  ☐ clean up the json responses @file:///Users/andrewjanzen/Projects/pixie/server/app/controllers/PixieController.js#5 @est(2h) @today
+
+TODO:
+  Pixies:
+    ☐ error handling @file:///Users/andrewjanzen/Projects/pixie/server/app/services/PixieService.js#29 @est(2h) @today
+    ☐ error handling @file:///Users/andrewjanzen/Projects/pixie/server/app/controllers/PixieController.js#4 @est(45m) @today
+    ☐ error handling @file:///Users/andrewjanzen/Projects/pixie/client/src/services/PixieService.js#4 @est(45m) @today
+    ☐ error handling and alerts @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieCreate.js#9 @est(20m) @today
+    ☐ error handling and alerts @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieIndex.js#8
+    ☐ error handling and alerts @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#10
+    ☐ fill tool @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#13
+    ☐ pagination @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieIndex.js#9
+    ☐ create pixie in modal dialog @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieCreate.js#9
+    ☐ debounce updates @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#14
+    ☐ update list when new pixie is created. may not need after users are set up @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieIndex.js#10
+  Users:
+    CRUD:
+      ☐ model
+        ☐ username
+        ☐ password
+        ☐ created
+        ☐ modified
+      ☐ create
+      ☐ getAll
+      ☐ getOne
+      ☐ update
+      ☐ delete
+    Authenticate:
+      ☐ encrypt passwords
+      ☐ verify posted username/password
+      ☐ look into tokens / sessions
+    Authorization:
+      ☐ determine 
+  Security:
+    ☐ set up express production best practices @https://expressjs.com/en/advanced/best-practice-security.html
+    ☐ update linode server
+  Devops:
+    ☐ ci/cd strategies
+    ☐ docker
+
+Idea:
+  ☐ when using collapsable navbar, should it collapse when an navlink is clicked? @file:///Users/andrewjanzen/Projects/pixie/client/src/components/layout/NavBar.js#5

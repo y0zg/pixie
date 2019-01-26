@@ -59,10 +59,7 @@ class PixieCreate extends React.Component {
             </form>
           </div>
           <div className="col-md-8 col-ld-9">
-            <PixieCanvas
-              pixie={this.state.pixie}
-              updatePixie={this.updatePixie}
-            />
+            <PixieCanvas pixie={this.state.pixie} updatePixie={this.updatePixie} />
           </div>
         </div>
       </div>
