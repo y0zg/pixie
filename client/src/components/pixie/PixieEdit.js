@@ -20,14 +20,12 @@ class PixieEdit extends React.Component {
   };
 
   componentDidMount = async () => {
-    this.props.socket.on(
-      'updatePixie',
-      updatedPixie => {
-        if (updatedPixie.id === this.state.pixie._id) {
-          this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
-        }
-      },
-    );
+    this.props.socket.on('updatePixie', updatedPixie => {
+      if (updatedPixie.id === this.state.pixie._id) {
+        this.setState({ pixie: Pixie.merge(this.state.pixie, updatedPixie.diff) });
+      }
+    });
+
     try {
       const getByIdResponse = await PixieService.getById(this.props.match.params.id);
       const pixie = Pixie.copy(getByIdResponse.data.pixie);
@@ -53,10 +51,7 @@ class PixieEdit extends React.Component {
   updateServer = async () => {
     try {
       await PixieService.update(this.state.pixie);
-      this.props.socket.emit(
-        'updatePixie',
-        { id: this.state.pixie._id, diff: this.state.diff },
-      );
+      this.props.socket.emit('updatePixie', { id: this.state.pixie._id, diff: this.state.diff });
       this.setState({ diff: [] });
     } catch (error) {
       console.error(error);
@@ -83,7 +78,7 @@ class PixieEdit extends React.Component {
         diff: [...this.state.diff, newPixel],
         pixie: Pixie.merge(this.state.pixie, [newPixel]),
       },
-      () => this.updateServer(),
+      () => this.updateServer()
     );
   };
 
@@ -103,7 +98,7 @@ class PixieEdit extends React.Component {
         pixie: newPixie,
         diff: newPixie.pixels,
       },
-      () => this.updateServer(),
+      () => this.updateServer()
     );
   };
 
@@ -134,7 +129,7 @@ class PixieEdit extends React.Component {
         diff: newPixie.pixels,
         showImageSearch: false,
       },
-      () => this.updateServer(),
+      () => this.updateServer()
     );
   };
 
@@ -174,15 +169,12 @@ class PixieEdit extends React.Component {
             <Dropzone onDrop={files => this.onDrop(files)}>
               <div>Drag an image here</div>
             </Dropzone>
-            <button
-              className="btn btn-block mt-2 btn-light"
-              onClick={this.toggleImageSearch}
-            >
+            <button className="btn btn-block mt-2 btn-light" onClick={this.toggleImageSearch}>
               import
             </button>
           </div>
           <div className="col-md-8 col-lg-9">
-            {this.state.pixie &&
+            {this.state.pixie && (
               <PixieCanvas
                 pixie={this.state.pixie}
                 updatePixie={this.updatePixie}
@@ -193,7 +185,7 @@ class PixieEdit extends React.Component {
                 updateColor={this.updateColor}
                 updateDiff={this.updateDiff}
               />
-            }
+            )}
           </div>
           <ImageSearch
             isOpen={this.state.showImageSearch}

@@ -11,10 +11,10 @@
     "jimp": "^0.6.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.14",
-    "puppeteer": "^1.11.0",
+    "nodemon": "^1.18.9",
     "socket.io": "^2.1.1"
   },
   "scripts": {
-    "start": "nodemon"
+    "start": "yarn nodemon"
   }
 }

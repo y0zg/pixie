@@ -25,7 +25,7 @@ module.exports = function(io) {
   router.put('/', PixieController.update);
   router.post('/upload', PixieController.upload);
   router.delete('/:id', PixieController.delete);
-  router.post('/scrape', PixieController.scrape);
+  // router.post('/scrape', PixieController.scrape);
 
   return router;
 };

@@ -5,12 +5,8 @@ import Router from './Router';
 const Layout = () => {
   return (
     <div className="container">
-      <div className="row">
-        <NavBar />
-      </div>
-      <div className="row">
-        <Router />
-      </div>
+      <NavBar />
+      <Router />
     </div>
   );
 };

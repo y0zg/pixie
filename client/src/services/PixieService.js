@@ -17,8 +17,16 @@ class PixieService {
     return axios.put('/api/pixies', pixie);
   };
 
-  static delete = id => {
-    return axios.delete(`/api/pixies/${id}`);
+  static delete = async id => {
+    try {
+      const response = await axios.delete(`/api/pixies/${id}`);
+      return response;
+    } catch (error) {
+      const { name, message } = error.response.data.error;
+      const deleteError = new Error(message);
+      deleteError.name = name;
+      throw deleteError;
+    }
   };
 
   static upload = (file, size) => {

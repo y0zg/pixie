@@ -3,9 +3,8 @@ import PixieService from '../../services/PixieService';
 import PixieCanvas from './PixieCanvas';
 import Pixie from '../../models/Pixie';
 import { withSocket } from '../../context/SocketProvider';
+import SweetAlert from '../common/SweetAlert';
 
-// TODO:
-// - pagination
 class PixieIndex extends React.Component {
   state = { pixies: [] };
 
@@ -36,16 +35,38 @@ class PixieIndex extends React.Component {
   };
 
   onClickDelete = id => async () => {
-    await PixieService.delete(id);
-    this.setState({ pixies: this.state.pixies.filter(pixie => pixie._id !== id) });
+    const deleteConfirmation = await SweetAlert.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      buttonsStyling: false,
+      confirmButtonClass: 'btn btn-danger mr-2',
+      cancelButtonClass: 'btn btn-secondary',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (deleteConfirmation.value) {
+      this.deletePixie(id);
+    }
+  };
+
+  deletePixie = async id => {
+    try {
+      await PixieService.delete(id);
+      this.setState({ pixies: this.state.pixies.filter(pixie => pixie._id !== id) });
+      SweetAlert.fire('Deleted!', 'Your pixie has been deleted.', 'success');
+    } catch (error) {
+      SweetAlert.fire(error.name, error.message, 'error');
+      console.error(`${error.name}: ${error.message}`);
+    }
   };
 
   updatePixie = updatedPixie => {
     this.setState({
-      pixies: this.state.pixies.map(pixie => (pixie._id === updatedPixie.id
-        ? Pixie.merge(pixie, updatedPixie.diff)
-        : pixie
-      ))
+      pixies: this.state.pixies.map(pixie =>
+        pixie._id === updatedPixie.id ? Pixie.merge(pixie, updatedPixie.diff) : pixie
+      ),
     });
   };
 
@@ -54,7 +75,7 @@ class PixieIndex extends React.Component {
       <div className="container">
         <div className="row">
           {this.state.pixies.map(pixie => (
-            <div key={pixie._id} className="col-md-4 col-lg-3">
+            <div key={pixie._id} className="col-12 col-md-4 col-lg-3">
               <div className="card mb-3">
                 <div className="card-header">
                   <div className="float-right">
@@ -72,13 +93,13 @@ class PixieIndex extends React.Component {
                     onClick={this.onClickEdit(pixie._id)}
                   >
                     Edit
-                   </button>
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-      </div >
+      </div>
     );
   };
 }
