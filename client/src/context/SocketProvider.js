@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import openSocket from 'socket.io-client';
 
 const SocketContext = React.createContext();
 
-class SocketProvider extends React.Component {
+class SocketProvider extends Component {
   state = {
-    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI)
+    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
   };
 
   componentWillUnmount = () => {

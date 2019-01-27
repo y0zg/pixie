@@ -1,48 +1,57 @@
-BUG:
-  ☐ error check that pixie id exists when loading @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#11 @est(1h) @today
-  ☐ pixie can be "edited" even if it has been deleted. graceful way to handle @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#12 @est(1h) @today
+In Progress:
+  ✔ @today collapse navbar after link is clicked @est(20m) @started(19-01-27 02:35) @done(19-01-27 02:53) @lasted(18m15s)
+  ☐ @today socket.io server should be middleware instead of handled in routes @est(30m)  
+  ☐ @today separate server index.js and app.js @est(1h)
 
-FIXME:
-  ☐ trim extra properties off json responses @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieCreate.js#10 @est(15m) @today
-  ☐ clean up the json responses @file:///Users/andrewjanzen/Projects/pixie/server/app/controllers/PixieController.js#5 @est(2h) @today
+Pixie:
+  Bugs:
+    ☐ @critical pixie.copy()is being called way too much when a pixie is updated in the gallery @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/index.js#14
+    ☐ @high pixie can be "edited" even if it has been deleted. need graceful way to handle @est(1h)
+    ☐ @high image search modal breaks when there are only one or two results, may need loading animation @est(2)
+  Architecture:
+    ☐ @high debounce edit updates @est(2h)
+  Error Handling:
+    ☐ @critical errors and alerts for api @est(3h)
+    ☐ @high error check that pixie id exists when loading edit page @est(1h)
+    ☐ @high clean up the json responses pixie.controller @est(2h)
+    ☐ @high handele 403 errors from unsplash when over request limit @est(1h)
+    ☐ @low error and logging levels based on if NODE_ENV dev / prod @est(2h)
+  Aesthetics:
+    ☐ @critical clean up edit toolbar  
+    ☐ @high clean up image search modal
+    ☐ @low change cursor when hovering over pixie canvas @est(10m)
+  New Features:
+    ☐ @high pagination of pixie gallery 
+    ☐ @low image search should do a random search in background upon initialization - use unsplash's featured collections
+    ☐ @low preload / cache searched images
+    ☐ @low pixie fill tool @est(30m) 
+    ☐ @low create pixie in modal dialog  
+    ☐ @low api endpoint to convert pixie to image (png, jpg, etc.)
+    ☐ @low undo image import
+    ☐ @low update list when new pixie is created or deleted by other user. wait until users are set up
 
-TODO:
-  Pixies:
-    ☐ error handling @file:///Users/andrewjanzen/Projects/pixie/server/app/services/PixieService.js#29 @est(2h) @today
-    ☐ error handling @file:///Users/andrewjanzen/Projects/pixie/server/app/controllers/PixieController.js#4 @est(45m) @today
-    ☐ error handling @file:///Users/andrewjanzen/Projects/pixie/client/src/services/PixieService.js#4 @est(45m) @today
-    ☐ error handling and alerts @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieCreate.js#9 @est(20m) @today
-    ☐ error handling and alerts @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieIndex.js#8
-    ☐ error handling and alerts @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#10
-    ☐ fill tool @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#13
-    ☐ pagination @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieIndex.js#9
-    ☐ create pixie in modal dialog @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieCreate.js#9
-    ☐ debounce updates @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieEdit.js#14
-    ☐ update list when new pixie is created. may not need after users are set up @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/PixieIndex.js#10
-  Users:
-    CRUD:
-      ☐ model
-        ☐ username
-        ☐ password
-        ☐ created
-        ☐ modified
-      ☐ create
-      ☐ getAll
-      ☐ getOne
-      ☐ update
-      ☐ delete
-    Authenticate:
-      ☐ encrypt passwords
-      ☐ verify posted username/password
-      ☐ look into tokens / sessions
-    Authorization:
-      ☐ determine 
-  Security:
-    ☐ set up express production best practices @https://expressjs.com/en/advanced/best-practice-security.html
-    ☐ update linode server
-  Devops:
-    ☐ ci/cd strategies
-    ☐ docker
+Security / DevOps:
+  ☐ @critical set up express production best practices 
+  ☐ @high limit registrations, and send email/txt as that number is approached  
+  ☐ @high update linode server
+  ☐ @low ci/cd strategies
+  ☐ @low docker
 
-Idea:
-  ☐ when using collapsable navbar, should it collapse when an navlink is clicked? @file:///Users/andrewjanzen/Projects/pixie/client/src/components/layout/NavBar.js#5
+Users:
+  CRUD:
+    ☐ model
+      ☐ username
+      ☐ password
+      ☐ created
+      ☐ modified
+    ☐ create
+    ☐ getAll
+    ☐ getOne
+    ☐ update
+    ☐ delete
+  Authenticate:
+    ☐ encrypt passwords
+    ☐ verify posted username/password
+    ☐ look into tokens / sessions
+  Authorization:
+    ☐ determine

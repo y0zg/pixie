@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Pixie from '../../models/Pixie';
-import PixieCanvas from './PixieCanvas';
-import PixieService from '../../services/PixieService';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 
-class PixieCreate extends React.Component {
+import Pixie from '.';
+import PixieCanvas from './PixieCanvas';
+import PixieService from '../../services/PixieService';
+
+export default class PixieCreate extends Component {
+  state = {
+    size: this.props.size,
+    pixie: new Pixie(this.props.size, this.props.size),
+  };
+
   static propTypes = {
     size: PropTypes.number,
   };
@@ -15,16 +21,11 @@ class PixieCreate extends React.Component {
     size: 25,
   };
 
-  state = {
-    size: this.props.size,
-    pixie: new Pixie(this.props.size, this.props.size),
-  };
-
   onSubmitForm = async event => {
     event.preventDefault();
     try {
       const createResponse = await PixieService.create(this.state.pixie);
-      this.props.history.push(`/${createResponse.data.pixie._id}`);
+      this.props.history.push(`/edit/${createResponse.data.pixie._id}`);
     } catch (error) {
       console.error(error);
     }
@@ -37,11 +38,11 @@ class PixieCreate extends React.Component {
     });
   };
 
-  updatePixie = pixie => {
+  updatePixie(pixie) {
     this.setState({ pixie });
-  };
+  }
 
-  render = () => {
+  render() {
     return (
       <div className="container">
         <div className="row">
@@ -64,7 +65,5 @@ class PixieCreate extends React.Component {
         </div>
       </div>
     );
-  };
+  }
 }
-
-export default PixieCreate;

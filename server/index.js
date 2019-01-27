@@ -4,14 +4,18 @@ const server = require('http').Server(app);
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const io = require('socket.io')(server);
-const routes = require('./app/routes')(io);
 const fileUpload = require('express-fileupload');
 const path = require('path');
-require('./app/Database');
+require('dotenv').config();
+require('./src/Database');
+
+const routes = require('./src/routes')(io);
 
 app.use((req, res, next) => {
-  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  console.log(`${moment().format()} - ${clientIp} - ${req.method} ${req.path}`);
+  if (process.env.NODE_ENV === 'development') {
+    const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log(`${moment().format()} - ${clientIp} - ${req.method} ${req.path}`);
+  }
   next();
 });
 app.use(bodyParser.json());

@@ -1,4 +1,4 @@
-class Pixie {
+export default class Pixie {
   constructor(numRows, numColumns) {
     this.rows = numRows;
     this.columns = numColumns;
@@ -11,36 +11,33 @@ class Pixie {
     }
   }
 
-  static copy = source => {
+  static copy(source) {
     const copy = new Pixie(source.rows, source.columns);
     if (source._id) {
       copy._id = source._id;
     }
 
-    copy.colors = source.colors.map(row => {
-      return row.map(color => {
-        return color;
-      });
-    });
-
+    copy.colors = source.colors.map(row => row.map(color => color));
     return copy;
-  };
+  }
 
-  static merge = (pixie, pixels) => {
+  static merge(pixie, pixels) {
     const merged = Pixie.copy(pixie);
     pixels.forEach(pixel => {
       merged.colors[pixel.row][pixel.column] = pixel.color;
     });
 
     return merged;
-  };
+  }
 
   get pixels() {
     let pixels = [];
     this.colors.forEach((row, rowIndex) => {
       row.forEach((color, columnIndex) => {
         pixels.push({
-          row: rowIndex, column: columnIndex, color: color
+          row: rowIndex,
+          column: columnIndex,
+          color: color,
         });
       });
     });
@@ -48,9 +45,7 @@ class Pixie {
     return pixels;
   }
 
-  pixelColor = (row, column) => {
+  pixelColor(row, column) {
     return this.colors[row][column];
-  };
+  }
 }
-
-export default Pixie;

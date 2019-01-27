@@ -11,13 +11,15 @@ class PixieController {
     }
   }
 
-  static async getById(req, res) {
+  static async getById(req, res, next) {
     try {
       const pixie = await PixieService.getById(req.params.id);
       res.json({ pixie });
     } catch (error) {
-      console.log(error);
-      res.json({ error: error.message });
+      const { name, message, stack } = error;
+      console.error(stack);
+      next(error);
+      // res.json({ error: error.message });
     }
   }
 
@@ -48,7 +50,7 @@ class PixieController {
     } catch (error) {
       const { name, message, stack } = error;
       console.error(stack);
-      res.status(404).send({ error: { name, message } });
+      res.status(410).send({ error: { name, message } });
     }
   }
 
