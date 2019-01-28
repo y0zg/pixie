@@ -21,7 +21,6 @@ export default withSocket(
       showImageSearch: false,
     };
 
-    // TODO: test this out, this may never catch an error, may need an iife
     async componentDidMount() {
       this.props.socket.on('updatePixie', updatedPixie => {
         if (updatedPixie.id === this.state.pixie._id) {
@@ -29,7 +28,6 @@ export default withSocket(
         }
       });
 
-      console.warn('need to test out this try/catch block');
       try {
         const getByIdResponse = await PixieService.getById(this.props.match.params.id);
         const pixie = Pixie.copy(getByIdResponse.data.pixie);

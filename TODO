@@ -1,12 +1,10 @@
 In Progress:
-  ✔ @today collapse navbar after link is clicked @est(20m) @started(19-01-27 02:35) @done(19-01-27 02:53) @lasted(18m15s)
-  ☐ @today socket.io server should be middleware instead of handled in routes @est(30m)  
-  ☐ @today separate server index.js and app.js @est(1h)
+  ☐ @today prevent someone from deleting a pixie while someone else is working on it @est(1h)
+  ☐ @today need to figure out why whole pixies are being sent to server for update, and not just the diff @est(1h)
 
 Pixie:
   Bugs:
-    ☐ @critical pixie.copy()is being called way too much when a pixie is updated in the gallery @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/index.js#14
-    ☐ @high pixie can be "edited" even if it has been deleted. need graceful way to handle @est(1h)
+    ☐ @critical pixie.copy() is being called way too much when a pixie is updated in the gallery @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/index.js#14
     ☐ @high image search modal breaks when there are only one or two results, may need loading animation @est(2)
   Architecture:
     ☐ @high debounce edit updates @est(2h)
@@ -19,6 +17,7 @@ Pixie:
   Aesthetics:
     ☐ @critical clean up edit toolbar  
     ☐ @high clean up image search modal
+    ☐ @high swap out navbar for a sidenav
     ☐ @low change cursor when hovering over pixie canvas @est(10m)
   New Features:
     ☐ @high pagination of pixie gallery 
@@ -28,10 +27,9 @@ Pixie:
     ☐ @low create pixie in modal dialog  
     ☐ @low api endpoint to convert pixie to image (png, jpg, etc.)
     ☐ @low undo image import
-    ☐ @low update list when new pixie is created or deleted by other user. wait until users are set up
 
 Security / DevOps:
-  ☐ @critical set up express production best practices 
+  ☐ @low set up express production best practices 
   ☐ @high limit registrations, and send email/txt as that number is approached  
   ☐ @high update linode server
   ☐ @low ci/cd strategies
@@ -55,3 +53,12 @@ Users:
     ☐ look into tokens / sessions
   Authorization:
     ☐ determine
+
+Archive:
+  ✔ @today separate server index.js and app.js @est(1h) @started(19-01-27 11:35) @done(19-01-27 13:51) @lasted(2h16m13s) @project(In Progress)
+  ✔ @today socket.io server should be middleware instead of handled in routes @est(30m) @started(19-01-27 13:51) @done(19-01-27 16:51) @lasted(3h38s) @project(In Progress)
+  ✔ @today delete pixie from gallery when other user deletes it.  @est(1h) @started(19-01-27 20:04) @done(19-01-27 22:38) @lasted(2h34m47s) @project(In Progress)
+  ✔ @today moved much of the unecessary websocket from the client to the server @started(19-01-27 22:38) @done(19-01-27 23:05) @lasted(27m41s) @project(In Progress)
+  ✔ @today populate gallery with with new pixies added by others in real time @est(30m) @started(19-01-27 23:09) @done(19-01-27 23:21) @lasted(12m32s) @project(In Progress)
+  ✔ @today collapse navbar after link is clicked @est(20m) @started(19-01-27 02:35) @done(19-01-27 02:53) @lasted(18m15s) @project(In Progress)
+  ✔ @today prevent canvas from overflowing page while editing forcing scroll down @est(30m) @started(19-01-27 09:26) @done(19-01-27 09:48) @lasted(22m21s) @project(Pixie.Aesthetics)

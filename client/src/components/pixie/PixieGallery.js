@@ -10,17 +10,27 @@ export default withSocket(
   class PixieGallery extends Component {
     state = { pixies: [] };
 
-    // TODO: need to fix this, can't be async and no try/catch
     async componentDidMount() {
-      console.warn("need to fix this, can't be async and no try/catch");
       const getAllResponse = await PixieService.getAll();
       this.setState({ pixies: getAllResponse.data.pixies.reverse() });
+      this.props.socket.on('createPixie', this.addPixieToGallery);
       this.props.socket.on('updatePixie', this.updatePixie);
+      this.props.socket.on('deletePixie', this.removePixieFromGallery);
     }
 
     componentWillUnmount() {
+      this.props.socket.off('createPixie');
       this.props.socket.off('updatePixie');
+      this.props.socket.off('deletePixie');
     }
+
+    addPixieToGallery = pixie => {
+      this.setState({ pixies: [pixie, ...this.state.pixies] });
+    };
+
+    removePixieFromGallery = id => {
+      this.setState({ pixies: this.state.pixies.filter(pixie => pixie._id !== id) });
+    };
 
     onSelectPixie = id => () => {
       this.props.history.push(`/${id}`);
@@ -54,7 +64,7 @@ export default withSocket(
     async deletePixie(id) {
       try {
         await PixieService.delete(id);
-        this.setState({ pixies: this.state.pixies.filter(pixie => pixie._id !== id) });
+        this.removePixieFromGallery(id);
         SweetAlert.fire('Deleted!', 'Your pixie has been deleted.', 'success');
       } catch (error) {
         SweetAlert.fire(error.name, error.message, 'error');

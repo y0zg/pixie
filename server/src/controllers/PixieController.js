@@ -19,7 +19,7 @@ class PixieController {
       const { name, message, stack } = error;
       console.error(stack);
       next(error);
-      // res.json({ error: error.message });
+      res.json({ error: error.message });
     }
   }
 
@@ -27,6 +27,7 @@ class PixieController {
     try {
       const pixie = req.body;
       const newPixie = await PixieService.create(pixie);
+      req.io.sockets.emit('createPixie', newPixie);
       res.status(201).json({ pixie: newPixie });
     } catch (error) {
       res.json({ error: error.message });
@@ -37,6 +38,7 @@ class PixieController {
     try {
       const pixie = req.body;
       const updatedPixie = await PixieService.update(pixie);
+      req.io.sockets.emit('updatePixie', req.body);
       res.json(updatedPixie);
     } catch (error) {
       res.json({ error: error.message });
@@ -46,6 +48,7 @@ class PixieController {
   static async delete(req, res) {
     try {
       await PixieService.delete(req.params.id);
+      req.io.sockets.emit('deletePixie', req.params.id);
       res.status(204).end();
     } catch (error) {
       const { name, message, stack } = error;
