@@ -1,11 +1,13 @@
-In Progress:
+Pixie:
+
+  In Progress:
   ☐ @today prevent someone from deleting a pixie while someone else is working on it @est(1h)
   ☐ @today need to figure out why whole pixies are being sent to server for update, and not just the diff @est(1h)
+  ☐ @critical pixie.copy() is being called way too much when a pixie is updated in the gallery @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/index.js#14
 
-Pixie:
   Bugs:
-    ☐ @critical pixie.copy() is being called way too much when a pixie is updated in the gallery @file:///Users/andrewjanzen/Projects/pixie/client/src/components/pixie/index.js#14
     ☐ @high image search modal breaks when there are only one or two results, may need loading animation @est(2)
+    ☐ @low nav bar fix to collapse on link click added flicker when on big screen
   Architecture:
     ☐ @high debounce edit updates @est(2h)
   Error Handling:
@@ -20,7 +22,7 @@ Pixie:
     ☐ @high swap out navbar for a sidenav
     ☐ @low change cursor when hovering over pixie canvas @est(10m)
   New Features:
-    ☐ @high pagination of pixie gallery 
+    ☐ @critical pagination of pixie gallery 
     ☐ @low image search should do a random search in background upon initialization - use unsplash's featured collections
     ☐ @low preload / cache searched images
     ☐ @low pixie fill tool @est(30m) 
