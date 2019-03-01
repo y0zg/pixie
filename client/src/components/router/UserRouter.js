@@ -1,8 +1,14 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import NoMatch from '../layout/NoMatch';
 
 import UserList from '../user/UserList';
 
 export default function UserRouter() {
-  return <Route path="/" component={UserList} />;
+  return (
+    <Switch>
+      <Route exact path="/" component={UserList} />
+      <Route component={NoMatch} />
+    </Switch>
+  );
 }

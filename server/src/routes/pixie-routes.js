@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const PixieController = require('../controllers/PixieController');
+const PixieController = require('../controllers/pixie-controller');
 
 router.get('/search/:query/:numRows/:page/:per_page', PixieController.search);
 router.get('/', PixieController.getAll);

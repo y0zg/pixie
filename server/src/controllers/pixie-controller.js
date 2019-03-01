@@ -1,7 +1,7 @@
-const PixieService = require('../services/PixieService');
-const UnsplashService = require('../services/UnsplashService');
+const PixieService = require('../services/pixie-service');
+const UnsplashService = require('../services/unsplash-service');
 
-class PixieController {
+module.exports = class PixieController {
   static async getAll(req, res) {
     try {
       const pixies = await PixieService.getAll();
@@ -18,8 +18,13 @@ class PixieController {
     } catch (error) {
       const { name, message, stack } = error;
       console.error(stack);
-      next(error);
-      res.json({ error: error.message });
+      res.status(410).json({ error: { name, message } });
+      // next(error);
+      // const { name, message, stack } = error;
+      // console.error(stack);
+      // next(error);
+      // res.status(404).send({ error: 'unable to locate pixie' });
+      // res.json({ error: error.message });
     }
   }
 
@@ -104,6 +109,4 @@ class PixieController {
       res.json({ error: error.message });
     }
   }
-}
-
-module.exports = PixieController;
+};

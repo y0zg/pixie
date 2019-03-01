@@ -34,7 +34,7 @@ export default withSocket(
         pixie._id = getByIdResponse.data.pixie._id;
         this.setState({ pixie });
       } catch (error) {
-        console.error(error);
+        console.error(`${error.name}: ${error.message}`);
       }
     }
 
