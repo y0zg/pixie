@@ -5,8 +5,15 @@ class PixieService {
     return axios.get('/api/pixies');
   };
 
-  static getById = id => {
-    return axios.get(`/api/pixies/${id}`);
+  static getById = async id => {
+    try {
+      return await axios.get(`/api/pixies/${id}`);
+    } catch (error) {
+      const { name, message } = error.response.data.error;
+      const getByIdError = new Error(message);
+      getByIdError.name = name;
+      throw getByIdError;
+    }
   };
 
   static create = pixie => {

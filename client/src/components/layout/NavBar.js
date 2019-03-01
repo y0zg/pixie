@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from './logo.png';
 
-const NavBar = () => {
+import logo from '../../assets/images/logo.png';
+
+export default function NavBar() {
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
       <Link to="/" className="navbar-brand">
@@ -15,21 +16,17 @@ const NavBar = () => {
         />
         Pixie
       </Link>
-      <button
-        className="navbar-toggler"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-      >
+      <button className="navbar-toggler" data-toggle="collapse" data-target="#navLinks">
         <span className="navbar-toggler-icon" />
       </button>
-      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+      <div className="collapse navbar-collapse" id="navLinks">
         <ul className="navbar-nav">
-          <li className="nav-item">
+          <li className="nav-item" data-toggle="collapse" data-target="#navLinks">
             <Link className="nav-link" to="/create">
               Create
             </Link>
           </li>
-          <li className="nav-item">
+          <li className="nav-item" data-toggle="collapse" data-target="#navLinks">
             <Link className="nav-link" to="/users">
               Users
             </Link>
@@ -38,6 +35,4 @@ const NavBar = () => {
       </div>
     </nav>
   );
-};
-
-export default NavBar;
+}

@@ -1,7 +1,7 @@
 {
   "name": "pixie-server",
   "version": "0.1.0",
-  "main": "server.js",
+  "main": "app.js",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
@@ -11,10 +11,12 @@
     "jimp": "^0.6.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.14",
-    "nodemon": "^1.18.9",
     "socket.io": "^2.1.1"
   },
   "scripts": {
-    "start": "yarn nodemon"
+    "start": "yarn nodemon --inspect"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
   }
 }

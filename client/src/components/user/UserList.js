@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class UserIndex extends Component {
+export default class UserList extends Component {
   render() {
     return (
       <div className="col">
@@ -9,5 +9,3 @@ class UserIndex extends Component {
     );
   }
 }
-
-export default UserIndex;

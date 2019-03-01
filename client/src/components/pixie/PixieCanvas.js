@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Pixie from '../../models/Pixie';
 
-class PixieCanvas extends React.Component {
+import Pixie from '.';
+
+export default class PixieCanvas extends Component {
+  state = {
+    ctx: null,
+    isMouseDown: false,
+  };
+
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
@@ -21,16 +27,11 @@ class PixieCanvas extends React.Component {
     style: null,
   };
 
-  state = {
-    ctx: null,
-    isMouseDown: false,
-  };
-
-  componentDidMount = () => {
+  componentDidMount() {
     const canvas = this.refs.canvas;
     const ctx = canvas.getContext('2d');
     this.setState({ ctx });
-  };
+  }
 
   onMouseDown = event => {
     if (this.props.isEditable) {
@@ -66,14 +67,14 @@ class PixieCanvas extends React.Component {
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
-  getPixelPos = (x, y) => {
+  getPixelPos(x, y) {
     const ctx = this.state.ctx;
     const canvasWidth = ctx.canvas.clientWidth;
     const pixelSize = canvasWidth / this.props.pixie.rows;
     return { row: Math.floor(y / pixelSize), column: Math.floor(x / pixelSize) };
-  };
+  }
 
-  drawPixel = (row, column, color) => {
+  drawPixel(row, column, color) {
     if (this.pixelDiffers(row, column, color)) {
       const oldPixie = this.props.pixie;
       const oldColor = oldPixie.pixelColor(row, column);
@@ -82,30 +83,25 @@ class PixieCanvas extends React.Component {
       this.props.updatePixie(newPixie);
       this.props.updateServer();
     }
-  };
+  }
 
-  pixelDiffers = (row, column, color) => {
+  pixelDiffers(row, column, color) {
     return color !== this.props.pixie.pixelColor(row, column);
-  };
+  }
 
-  drawCanvas = pixie => {
+  drawCanvas(pixie) {
     if (this.state.ctx) {
       const ctx = this.state.ctx;
       const canvasWidth = ctx.canvas.width;
       const pixelSize = canvasWidth / pixie.rows;
       pixie.pixels.forEach(pixel => {
         ctx.fillStyle = pixel.color;
-        ctx.fillRect(
-          pixel.column * pixelSize,
-          pixel.row * pixelSize,
-          pixelSize + 1,
-          pixelSize + 1,
-        );
+        ctx.fillRect(pixel.column * pixelSize, pixel.row * pixelSize, pixelSize + 1, pixelSize + 1);
       });
     }
-  };
+  }
 
-  render = () => {
+  render() {
     this.drawCanvas(this.props.pixie);
     return (
       <canvas
@@ -118,9 +114,7 @@ class PixieCanvas extends React.Component {
         style={this.props.style}
       >
         Sorry, your browser doesn't support the &lt;canvas&gt; element.
-      </canvas >
+      </canvas>
     );
-  };
+  }
 }
-
-export default PixieCanvas;

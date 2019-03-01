@@ -1,4 +1,4 @@
-const Pixie = require('./../models/Pixie');
+const Pixie = require('../models/pixie');
 const Jimp = require('jimp');
 // const puppeteer = require('puppeteer');
 
@@ -11,8 +11,15 @@ class PixieService {
     return Pixie.find({});
   }
 
-  static getById(id) {
-    return Pixie.findById(id);
+  static async getById(id) {
+    try {
+      const response = await Pixie.findById(id);
+      return response;
+    } catch (err) {
+      const error = new Error(`Unable to locate pixie with id ${id}`);
+      error.name = 'Search Error';
+      throw error;
+    }
   }
 
   static update(pixie) {

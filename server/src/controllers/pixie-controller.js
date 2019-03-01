@@ -1,7 +1,7 @@
-const PixieService = require('../services/PixieService');
-const UnsplashService = require('../services/UnsplashService');
+const PixieService = require('../services/pixie-service');
+const UnsplashService = require('../services/unsplash-service');
 
-class PixieController {
+module.exports = class PixieController {
   static async getAll(req, res) {
     try {
       const pixies = await PixieService.getAll();
@@ -11,13 +11,20 @@ class PixieController {
     }
   }
 
-  static async getById(req, res) {
+  static async getById(req, res, next) {
     try {
       const pixie = await PixieService.getById(req.params.id);
       res.json({ pixie });
     } catch (error) {
-      console.log(error);
-      res.json({ error: error.message });
+      const { name, message, stack } = error;
+      console.error(stack);
+      res.status(410).json({ error: { name, message } });
+      // next(error);
+      // const { name, message, stack } = error;
+      // console.error(stack);
+      // next(error);
+      // res.status(404).send({ error: 'unable to locate pixie' });
+      // res.json({ error: error.message });
     }
   }
 
@@ -25,6 +32,7 @@ class PixieController {
     try {
       const pixie = req.body;
       const newPixie = await PixieService.create(pixie);
+      req.io.sockets.emit('createPixie', newPixie);
       res.status(201).json({ pixie: newPixie });
     } catch (error) {
       res.json({ error: error.message });
@@ -35,6 +43,7 @@ class PixieController {
     try {
       const pixie = req.body;
       const updatedPixie = await PixieService.update(pixie);
+      req.io.sockets.emit('updatePixie', req.body);
       res.json(updatedPixie);
     } catch (error) {
       res.json({ error: error.message });
@@ -44,11 +53,12 @@ class PixieController {
   static async delete(req, res) {
     try {
       await PixieService.delete(req.params.id);
+      req.io.sockets.emit('deletePixie', req.params.id);
       res.status(204).end();
     } catch (error) {
       const { name, message, stack } = error;
       console.error(stack);
-      res.status(404).send({ error: { name, message } });
+      res.status(410).send({ error: { name, message } });
     }
   }
 
@@ -99,6 +109,4 @@ class PixieController {
       res.json({ error: error.message });
     }
   }
-}
-
-module.exports = PixieController;
+};

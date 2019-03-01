@@ -1,58 +1,62 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class Pagination extends React.Component {
+export default class Pagination extends Component {
   static propTypes = {
-    totalPages: PropTypes.number.isRequired,
-    currentPage: PropTypes.number.isRequired,
-    maxPages: PropTypes.number.isRequired,
+    onSelectPage: PropTypes.func.isRequired,
+    currentPage: PropTypes.number,
+    maxPages: PropTypes.number,
+    totalPages: PropTypes.number,
+    enabled: PropTypes.bool,
   };
 
   static propDefaults = {
+    currentPage: 1,
+    maxPages: 10,
     totalPages: 0,
+    enabled: false,
   };
 
-  setCurrentPage = currentPage => event => {
+  onSelectPage = currentPage => event => {
     event.preventDefault();
-    if (currentPage > 0 && currentPage <= this.props.maxPages) {
-      this.props.setCurrentPage(currentPage);
+    if (this.props.enabled && currentPage > 0 && currentPage <= this.props.maxPages) {
+      this.props.onSelectPage(currentPage);
     }
   };
 
-  render = () => {
-    const { totalPages, currentPage, maxPages } = this.props;
-
-    const pageLinks = () => {
-      const links = [];
-      for (let page = 1; page <= totalPages && page <= maxPages; page++) {
-        links.push((
-          <li
-            key={`link${page}`}
-            className={`page-item${page === currentPage ? ' active' : ''}`}
-          >
-            <a
-              className="page-link"
-              onClick={this.setCurrentPage(page)}
-              href="/"
-            >
-              {page}
-            </a>
-          </li>
-        ));
-      }
-
-      return links;
+  pageLinks(currentPage, totalPages, maxPages) {
+    const links = [];
+    for (let page = 1; page <= totalPages && page <= maxPages; page++) {
+      links.push(
+        <li key={`link${page}`} className={`page-item${page === currentPage && ' active'}`}>
+          <a className="page-link" onClick={this.onSelectPage(page)} href="/">
+            {page}
+          </a>
+        </li>
+      );
     }
 
+    return links;
+  }
+
+  render() {
+    const { totalPages, currentPage, maxPages } = this.props;
     if (totalPages) {
       return (
         <ul className="pagination justify-content-center">
-          <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
-            <span className="page-link" onClick={this.setCurrentPage(currentPage - 1)}>Previous</span>
+          <li className={`page-item${currentPage === 1 && ' disabled'}`}>
+            <span className="page-link" onClick={this.onSelectPage(currentPage - 1)}>
+              Previous
+            </span>
           </li>
-          {pageLinks()}
-          <li className={`page-item${currentPage === this.props.maxPages ? ' disabled' : ''}`}>
-            <span className="page-link" onClick={this.setCurrentPage(currentPage + 1)}>Next</span>
+          {this.pageLinks(currentPage, totalPages, maxPages)}
+          <li
+            className={`page-item${(currentPage === maxPages || currentPage === totalPages) &&
+              ' disabled'}`}
+          >
+            <span className="page-link" onClick={this.onSelectPage(currentPage + 1)}>
+              Next
+            </span>
           </li>
         </ul>
       );
@@ -61,5 +65,3 @@ class Pagination extends React.Component {
     return null;
   }
 }
-
-export default Pagination;
