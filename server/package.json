@@ -13,7 +13,7 @@
     "socket.io": "^2.1.1"
   },
   "scripts": {
-    "start": "yarn nodemon --inspect"
+    "start": "./start.sh"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
