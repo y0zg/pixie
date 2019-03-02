@@ -1,0 +1,64 @@
+version: '3.4'
+services:
+  #
+  # Client development
+  #
+  client:
+    build:
+      context: ./client
+      args:
+        NODE_ENV: ${NODE_ENV}
+    image: pixie_client
+    container_name: pixie-client
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${CLIENT_PORT}
+      REACT_APP_SOCKET_IO_URI: ${REACT_APP_SOCKET_IO_URI}
+    ports:
+      - ${CLIENT_PORT}:${CLIENT_PORT}
+    volumes:
+      - ./client:/srv/app/client
+      - client_node_modules:/srv/app/client/node_modules
+  #
+  # Server development
+  #
+  server:
+    build:
+      context: ./server
+      args:
+        NODE_ENV: ${NODE_ENV}
+    image: pixie-server
+    container_name: pixie-server
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      SERVER_PORT: ${SERVER_PORT}
+      DEBUG_PORT: ${DEBUG_PORT}
+      UNSPLASH_ID: ${UNSPLASH_ID}
+      DB_URI: ${DB_URI}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${DEBUG_PORT}:${DEBUG_PORT}
+    volumes:
+      - ./server:/srv/app/server
+      - server_node_modules:/srv/app/server/node_modules
+  #
+  # MongoDB
+  #
+  mongo:
+    image: mongo:latest
+    container_name: pixie-data
+    networks:
+      - default
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+#
+# Named volumes
+#
+volumes:
+  client_node_modules:
+  server_node_modules:
+  mongo_data:

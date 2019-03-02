@@ -4,7 +4,6 @@ const io = require('socket.io')();
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const path = require('path');
-require('dotenv').config();
 
 require('./src/Database');
 const requestLogger = require('./src/middlewares/request-logger');
