@@ -20,7 +20,7 @@ COPY server/package.json server/yarn.lock ./
 RUN yarn --production
 RUN yarn audit
 RUN rm package.json yarn.lock
-COPY server/index.js ./
+COPY server/app.js ./
 COPY server/src src/
 RUN find src/ -name '*.test.js' -type f -delete
 RUN mkdir public && cp -R ../server/public/* ./public
@@ -37,4 +37,4 @@ WORKDIR /srv/app
 COPY --from=build /srv/app/dist ./
 USER node
 ENTRYPOINT [ "node" ]
-CMD [ "index.js" ]
+CMD [ "app.js" ]
