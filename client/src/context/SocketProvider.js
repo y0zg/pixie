@@ -5,7 +5,7 @@ const SocketContext = React.createContext();
 
 class SocketProvider extends Component {
   state = {
-    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI),
+    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI || window.location),
   };
 
   componentWillUnmount = () => {

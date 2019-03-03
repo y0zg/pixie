@@ -4,7 +4,6 @@ const io = require('socket.io')();
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const path = require('path');
-require('dotenv').config();
 
 require('./src/Database');
 const requestLogger = require('./src/middlewares/request-logger');
@@ -20,9 +19,11 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', routes);
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+
+const publicRoot = path.join(__dirname, 'public');
+app.use(express.static(publicRoot));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+  res.sendFile(path.join(publicRoot, 'index.html'));
 });
 
 app.use((err, req, res, next) => {
