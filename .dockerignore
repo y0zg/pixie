@@ -1,0 +1,10 @@
+Dockerfile
+.dockerignore
+node_modules
+build
+coverage
+.env
+.git*
+CHANGELOG.md
+README.md
+*.yml

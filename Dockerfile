@@ -1,40 +1,38 @@
-# 
-# Build image
-# 
-FROM node:10-alpine as build
+ARG NODE_IMG_VER=10.15.3-alpine
 
-WORKDIR /srv/app/client
-COPY client/package.json client/yarn.lock ./
-RUN yarn --audit
-COPY client ./
-RUN yarn build
-
-WORKDIR /srv/app/server
-COPY server/package.json server/yarn.lock ./
-RUN yarn --audit
-COPY server/ ./
-RUN rm -rf public && mv ../client/build ./public
-
-WORKDIR /srv/app/dist
-COPY server/package.json server/yarn.lock ./
-RUN yarn --production
-RUN yarn audit
-RUN rm package.json yarn.lock
-COPY server/app.js ./
-COPY server/src src/
-RUN find src/ -name '*.test.js' -type f -delete
-RUN mkdir public && cp -R ../server/public/* ./public
-
-WORKDIR /srv/app/server
-ENTRYPOINT [ "yarn" ]
-CMD [ "start" ]
-
-# 
-# Release image
-# 
-FROM node:10-alpine AS release
-WORKDIR /srv/app
-COPY --from=build /srv/app/dist ./
+FROM node:$NODE_IMG_VER AS base
+ARG NODE_ENV
+RUN if [ "$NODE_ENV" = "development" ]; then \
+  apk add --no-cache git; fi
 USER node
-ENTRYPOINT [ "node" ]
-CMD [ "app.js" ]
+RUN mkdir /home/node/app
+WORKDIR /home/node/app
+
+FROM base AS development
+RUN mkdir node_modules && \
+  mkdir /home/node/.yarn-cache
+ENV YARN_CACHE_FOLDER=/home/node/.yarn-cache
+CMD [ "yarn", "install-start" ]
+
+FROM base AS builder
+COPY --chown=node:node package.json yarn.lock ./
+RUN yarn --frozen-lockfile
+COPY --chown=node:node . .
+ARG REACT_APP_TRACKING_ID
+RUN \
+  CI=true yarn test && \
+  yarn build && \
+  yarn --production --frozen-lockfile && \
+  rm package.json yarn.lock && \
+  rm -rf public && \
+  mv build public && \
+  mv src/server . && \
+  rm -rf src && \
+  find . -name '*.test.js*' -type f -delete && \
+  find . -name '__snapshots__' -type d -delete
+CMD [ "node", "server/index.js" ]
+
+FROM base AS build
+COPY --from=builder /home/node/app ./
+ENV NODE_ENV production
+CMD [ "node", "server/app.js" ]

@@ -5,7 +5,8 @@ const SocketContext = React.createContext();
 
 class SocketProvider extends Component {
   state = {
-    socket: openSocket(process.env.REACT_APP_SOCKET_IO_URI || window.location),
+    socket:
+      process.env.NODE_ENV === 'production' ? openSocket() : openSocket('http://localhost:8080'),
   };
 
   componentWillUnmount = () => {
