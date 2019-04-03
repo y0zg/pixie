@@ -1,0 +1,94 @@
+{
+  "name": "pixie",
+  "version": "0.0.0-development",
+  "repository": "https://ajanzen.net/andrew/pixie",
+  "license": "MIT",
+  "main": "src/server/app.js",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.4",
+    "express-fileupload": "^1.0.0",
+    "jimp": "^0.6.0",
+    "moment": "^2.22.2",
+    "mongoose": "^5.3.14",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/exec": "^3.3.2",
+    "@semantic-release/git": "7.0.8",
+    "@semantic-release/gitlab": "^3.1.2",
+    "bootstrap": "^4.2.1",
+    "concurrently": "^4.1.0",
+    "jquery": "^3.3.1",
+    "nodemon": "^1.18.9",
+    "popper.js": "^1.14.6",
+    "react": "^16.6.3",
+    "react-color": "^2.14.1",
+    "react-dom": "^16.6.3",
+    "react-dropzone": "^7.0.1",
+    "react-input-range": "^1.3.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1",
+    "reactstrap": "^7.0.2",
+    "semantic-release": "^15.13.3",
+    "socket.io-client": "^2.2.0",
+    "sweetalert2": "^8.0.1",
+    "sweetalert2-react-content": "^1.0.1"
+  },
+  "scripts": {
+    "install-start": "yarn --frozen-lockfile --audit && yarn start",
+    "start": "concurrently -k \"yarn:start-server\" \"yarn:start-client\"",
+    "start-server": "nodemon --inspect=0.0.0.0:${DEBUG_PORT:-9229}",
+    "start-client": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "current-version": "echo $npm_package_version"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "proxy": "http://localhost:8080",
+  "nodemonConfig": {
+    "ignore": [
+      "*.test.js"
+    ],
+    "watch": [
+      "src/server/"
+    ]
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "mv dist pixie-${nextRelease.version} && tar cvzf pixie-${nextRelease.version}.tar.gz pixie-${nextRelease.version}"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+        }
+      ],
+      [
+        "@semantic-release/gitlab",
+        {
+          "assets": "pixie-*.tar.gz"
+        }
+      ]
+    ]
+  }
+}

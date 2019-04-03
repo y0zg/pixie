@@ -4,52 +4,84 @@ stages:
   - deploy
 
 variables:
-  DOCKER_HOST: 'tcp://docker:2375'
-  DOCKER_DRIVER: 'overlay2'
-  TEST_IMAGE: '$CI_REGISTRY_IMAGE:testing'
-  RELEASE_IMAGE: '$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG'
-  PRODUCTION_IMAGE: '$CI_REGISTRY_IMAGE:latest'
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
+  BRANCH_TAG: $CI_COMMIT_REF_SLUG
+  RELEASE_TAG: latest
 
-.docker_job_template: &docker_job_definition
-  image: docker:latest
+.use-dind: &use-dind
+  image: docker:stable
   services:
     - docker:dind
   before_script:
-    - 'docker info'
-    - 'docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY'
-    - 'docker pull $TEST_IMAGE || true'
+    - docker info
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+.except-release-bot: &except-release-bot
+  except:
+    variables:
+      - $CI_COMMIT_TITLE =~ /^chore\(release\).*/
 
 build:
-  <<: *docker_job_definition
+  <<: *use-dind
   stage: build
-  script: |
-    docker build \
-      --target build \
-      --cache-from $TEST_IMAGE \
-      --tag $TEST_IMAGE \
-      ./
-    docker push $TEST_IMAGE
+  only:
+    - master
+    - merge_requests
+  <<: *except-release-bot
+  script:
+    - TAG=$( [[ $CI_COMMIT_REF_NAME == master ]] && echo $RELEASE_TAG || echo $BRANCH_TAG )
+    - IMAGE=$REGISTRY_IMAGE:$TAG
+    - docker pull $IMAGE || true
+    - docker build --target build --cache-from $IMAGE --build-arg NODE_IMG_VER --build-arg REACT_APP_TRACKING_ID --tag $IMAGE .
+    - docker push $IMAGE
+
+package:
+  <<: *use-dind
+  stage: build
+  only:
+    - master
+  <<: *except-release-bot
+  artifacts:
+    expire_in: 5 mins
+    paths:
+      - dist/
+  variables:
+    DIST_PATH: /builds/$CI_PROJECT_PATH/dist
+  script:
+    - docker pull $REGISTRY_IMAGE:$RELEASE_TAG
+    - mkdir -p $DIST_PATH
+    - docker run --rm -u root -v $DIST_PATH:/mnt/dist $REGISTRY_IMAGE:$RELEASE_TAG sh -c "mv * /mnt/dist/"
 
 release:
-  <<: *docker_job_definition
   stage: release
   only:
     - master
-    - production
-  script: |
-    docker build \
-      --target release \
-      --tag $RELEASE_IMAGE \
-      ./
-    docker push $RELEASE_IMAGE
+  <<: *except-release-bot
+  image: node:$NODE_IMG_VER
+  cache:
+    key: yarn-cache
+    paths:
+      - .yarn-cache/
+  artifacts:
+    expire_in: 5 mins
+    paths:
+      - version
+  script:
+    - apk add --no-cache git
+    - yarn --frozen-lockfile --cache-folder .yarn-cache
+    - yarn semantic-release
+    - yarn --silent current-version > version
 
 deploy:
-  <<: *docker_job_definition
+  <<: *use-dind
   stage: deploy
   only:
-    - production
-  script: |
-    docker pull $RELEASE_IMAGE
-    docker tag $RELEASE_IMAGE $PRODUCTION_IMAGE
-    docker push $PRODUCTION_IMAGE
-    wget --post-data="" $DEPLOY_WEBHOOK
+    - master
+  <<: *except-release-bot
+  script:
+    - VERSION=$( cat version )
+    - docker pull $REGISTRY_IMAGE:$RELEASE_TAG
+    - docker tag $REGISTRY_IMAGE:$RELEASE_TAG $REGISTRY_IMAGE:$VERSION
+    - docker push $REGISTRY_IMAGE:$VERSION

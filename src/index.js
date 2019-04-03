@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import './client/index.css';
+import App from './client/App';
+import * as serviceWorker from './client/serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
-import SocketProvider from './context/SocketProvider';
+import SocketProvider from './client/context/SocketProvider';
 
 ReactDOM.render(
   <BrowserRouter>

@@ -1,64 +1,43 @@
 version: '3.4'
 services:
-  #
-  # Client development
-  #
-  client:
+  pixie:
     build:
-      context: ./client
+      context: .
+      target: development
       args:
-        NODE_ENV: ${NODE_ENV}
-    image: pixie_client
-    container_name: pixie-client
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${CLIENT_PORT}
-      REACT_APP_SOCKET_IO_URI: ${REACT_APP_SOCKET_IO_URI}
-    ports:
-      - ${CLIENT_PORT}:${CLIENT_PORT}
-    volumes:
-      - ./client:/srv/app/client
-      - client_node_modules:/srv/app/client/node_modules
-  #
-  # Server development
-  #
-  server:
-    build:
-      context: ./server
-      args:
-        NODE_ENV: ${NODE_ENV}
-    image: pixie-server
-    container_name: pixie-server
+        NODE_IMG_VER: $NODE_IMG_VER
+        NODE_ENV: ${NODE_ENV:-development}
+    image: pixie-dev
+    container_name: pixie
     depends_on:
       - mongo
     environment:
-      NODE_ENV: ${NODE_ENV}
-      SERVER_PORT: ${SERVER_PORT}
-      DEBUG_PORT: ${DEBUG_PORT}
-      UNSPLASH_ID: ${UNSPLASH_ID}
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${CLIENT_PORT:-3000}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      DEBUG_PORT: ${DEBUG_PORT:-9229}
       DB_URI: ${DB_URI}
+      UNSPLASH_ID: ${UNSPLASH_ID}
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
-      - ${DEBUG_PORT}:${DEBUG_PORT}
+      - ${CLIENT_PORT:-3000}:${CLIENT_PORT:-3000}
+      - ${SERVER_PORT:-8080}:${SERVER_PORT:-8080}
+      - ${DEBUG_PORT:-9229}:${DEBUG_PORT:-9229}
     volumes:
-      - ./server:/srv/app/server
-      - server_node_modules:/srv/app/server/node_modules
-  #
-  # MongoDB
-  #
+      - ./:/home/node/app
+      - node_modules:/home/node/app/node_modules
+      - yarn_cache:/home/node/.yarn-cache
   mongo:
-    image: mongo:latest
-    container_name: pixie-data
-    networks:
-      - default
+    image: mongo
+    container_name: pixie-mongo
     ports:
-      - '27017:27017'
+      - ${DB_PORT:-27017}:${DB_PORT:-27017}
     volumes:
+      - mongo_config:/etc/mongo
+      - mongo_configdb:/data/configdb
       - mongo_data:/data/db
-#
-# Named volumes
-#
 volumes:
-  client_node_modules:
-  server_node_modules:
+  yarn_cache:
+  node_modules:
+  mongo_config:
+  mongo_configdb:
   mongo_data:

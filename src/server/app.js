@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 app.use('/api', routes);
 
-const publicRoot = path.join(__dirname, 'public');
+const publicRoot = path.join(process.cwd(), 'public');
 app.use(express.static(publicRoot));
 app.get('*', (req, res) => {
   res.sendFile(path.join(publicRoot, 'index.html'));
