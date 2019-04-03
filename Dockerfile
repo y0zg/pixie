@@ -18,9 +18,7 @@ FROM base AS builder
 COPY --chown=node:node package.json yarn.lock ./
 RUN yarn --frozen-lockfile
 COPY --chown=node:node . .
-ARG REACT_APP_TRACKING_ID
 RUN \
-  CI=true yarn test && \
   yarn build && \
   yarn --production --frozen-lockfile && \
   rm package.json yarn.lock && \
@@ -30,7 +28,6 @@ RUN \
   rm -rf src && \
   find . -name '*.test.js*' -type f -delete && \
   find . -name '__snapshots__' -type d -delete
-CMD [ "node", "server/index.js" ]
 
 FROM base AS build
 COPY --from=builder /home/node/app ./

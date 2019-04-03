@@ -64,5 +64,31 @@
     "watch": [
       "src/server/"
     ]
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "mv dist pixie-${nextRelease.version} && tar cvzf pixie-${nextRelease.version}.tar.gz pixie-${nextRelease.version}"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+        }
+      ],
+      [
+        "@semantic-release/gitlab",
+        {
+          "assets": "pixie-*.tar.gz"
+        }
+      ]
+    ]
   }
 }
