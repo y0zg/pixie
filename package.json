@@ -1,6 +1,6 @@
 {
   "name": "pixie",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "repository": "https://ajanzen.net/andrew/pixie",
   "license": "MIT",
   "main": "src/server/app.js",
